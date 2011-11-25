@@ -15,13 +15,14 @@ rescue LoadError
 end
 
 Spork.prefork do
-  require 'rspec/autorun'
+  #require 'rspec/autorun'
+  require 'mspec/core'
 
   Dir['./spec/support/**/*.rb'].map {|f| require f}
 
-  def in_editor?
-    ENV.has_key?('TM_MODE') || ENV.has_key?('EMACS') || ENV.has_key?('VIM')
-  end
+  # def in_editor?
+  #   ENV.has_key?('TM_MODE') || ENV.has_key?('EMACS') || ENV.has_key?('VIM')
+  # end
 
   RSpec.configure do |c|
     # structural
@@ -29,7 +30,7 @@ Spork.prefork do
 
     # runtime options
     c.treat_symbols_as_metadata_keys_with_true_values = true
-    c.color = !in_editor?
+    #c.color = !in_editor?
   end
 end
 
