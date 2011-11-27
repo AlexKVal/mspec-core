@@ -32,7 +32,9 @@ module MSpec::Core
           options[:requires] << path
         end
 
-        # parser.on('-O', '--options PATH', 'Specify the path to a custom options file') do |path|
+        parser.on('-O', '--options PATH', 'Specify the path to a custom options file') do |path|
+          options[:custom_options_file] = path
+        end
 
          parser.on('--order TYPE', 'Run examples by the specified order type',
                    '  [rand] randomized',

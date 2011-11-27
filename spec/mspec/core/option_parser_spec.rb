@@ -160,12 +160,12 @@ module MSpec::Core
     #===== additional coverage =====
 
     describe "-I" do
-      it "appends path to :libs array" do
+      it "adds the path to custom libs" do
         options = Parser.parse!(%w[-I /path/to/libs/])
         options[:libs].should include('/path/to/libs/')
       end
 
-      it "appends paths from multiple invocations" do
+      it "adds paths to custom libs from multiple invocations" do
         options = Parser.parse!(%w[-I /path/to/libs -I /another/libs -I ../yet/one])
         options[:libs].should eq(['/path/to/libs', '/another/libs', '../yet/one'])
       end
@@ -173,14 +173,23 @@ module MSpec::Core
 
     %w[-r --require].each do |option|
       describe option do
-        it "appends path to :requires array" do
+        it "adds the path to a custom file" do
           options = Parser.parse!([option, '/path/to/file_spec.rb'])
           options[:requires].should include('/path/to/file_spec.rb')
         end
 
-        it "appends paths from multiple invocations" do
+        it "adds paths to custom files from multiple invocations" do
           options = Parser.parse!([option, '/path/to/file_spec.rb', option, '../yet/one_spec.rb'])
           options[:requires].should eq(['/path/to/file_spec.rb', '../yet/one_spec.rb'])
+        end
+      end
+    end
+
+    %w[-O --options].each do |option|
+      describe option do
+        it "specifies the path to a custom options file" do
+          options = Parser.parse!([option, '/path/to/custom_options_file'])
+          options[:custom_options_file].should eq('/path/to/custom_options_file')
         end
       end
     end
