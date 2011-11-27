@@ -43,7 +43,7 @@ module MSpec::Core
         it "sets the output stream for the formatter" do
           options[:formatters].last.should eq(['progress', 'out.txt'])
         end
-=begin
+
         context "with multiple formatters" do
           context "after last formatter" do
             it "sets the output stream for the last formatter" do
@@ -61,7 +61,6 @@ module MSpec::Core
             end
           end
         end
-=end
       end
     end
   end
