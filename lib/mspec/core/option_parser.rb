@@ -95,7 +95,8 @@ FILTERING
         ) do |tag|
           splits = tag.split(':')
           value = splits.count > 1 ? eval(splits.last) : true
-          options[:inclusion_filter] = {splits.first.to_sym => value}
+          options[:inclusion_filter] ||= {}
+          options[:inclusion_filter].merge!({splits.first.to_sym => value})
         end
 
         # parser.on('--default_path PATH', 'Set the default path where RSpec looks for examples.',
