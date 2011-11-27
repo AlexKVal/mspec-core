@@ -4,6 +4,9 @@ end
 
 require_mspec 'core/world'
 require_mspec 'core/configuration'
+require_mspec 'core/option_parser'
+require_mspec 'core/configuration_options'
+require_mspec 'core/example_group'
 
 module MSpec
   def self.configuration

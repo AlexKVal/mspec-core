@@ -15,7 +15,6 @@ rescue LoadError
 end
 
 Spork.prefork do
-  #require 'rspec/autorun'
   require 'mspec/core'
 
   Dir['./spec/support/**/*.rb'].map {|f| require f}
