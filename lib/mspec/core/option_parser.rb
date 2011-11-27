@@ -27,7 +27,10 @@ module MSpec::Core
           options[:libs] << dir
         end
 
-        # parser.on('-r', '--require PATH', 'Require a file') do |path|
+        parser.on('-r', '--require PATH', 'Require a file') do |path|
+          options[:requires] ||= []
+          options[:requires] << path
+        end
 
         # parser.on('-O', '--options PATH', 'Specify the path to a custom options file') do |path|
 

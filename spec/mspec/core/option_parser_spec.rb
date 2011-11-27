@@ -159,18 +159,30 @@ module MSpec::Core
 
     #===== additional coverage =====
 
-    describe "-I PATH" do
-      it "appends PATH to options[:libs] array" do
-        options = Parser.parse!(%w[-I /path/to/file])
-        options[:libs].should include('/path/to/file')
+    describe "-I" do
+      it "appends path to :libs array" do
+        options = Parser.parse!(%w[-I /path/to/libs/])
+        options[:libs].should include('/path/to/libs/')
       end
 
       it "appends paths from multiple invocations" do
-        options = Parser.parse!(%w[-I /path/to/file -I /another/path -I ../yet/one])
-        options[:libs].should eq(['/path/to/file', '/another/path', '../yet/one'])
+        options = Parser.parse!(%w[-I /path/to/libs -I /another/libs -I ../yet/one])
+        options[:libs].should eq(['/path/to/libs', '/another/libs', '../yet/one'])
       end
     end
 
-    
+    %w[-r --require].each do |option|
+      describe option do
+        it "appends path to :requires array" do
+          options = Parser.parse!([option, '/path/to/file_spec.rb'])
+          options[:requires].should include('/path/to/file_spec.rb')
+        end
+
+        it "appends paths from multiple invocations" do
+          options = Parser.parse!([option, '/path/to/file_spec.rb', option, '../yet/one_spec.rb'])
+          options[:requires].should eq(['/path/to/file_spec.rb', '../yet/one_spec.rb'])
+        end
+      end
+    end
   end
 end
