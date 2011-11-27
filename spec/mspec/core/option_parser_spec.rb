@@ -135,6 +135,19 @@ module MSpec::Core
       end
     end
 
-    
+    describe "--order" do
+      it "is nil by default" do
+        Parser.parse!([])[:order].should be_nil
+      end
+
+      %w[rand random].each do |option|
+        context "with #{option}" do
+          it "defines the order as random" do
+            options = Parser.parse!(['--order', option])
+            options[:order].should eq(option)
+          end
+        end
+      end
+    end
   end
 end

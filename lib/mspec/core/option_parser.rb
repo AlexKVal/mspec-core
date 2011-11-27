@@ -25,11 +25,18 @@ module MSpec::Core
         # parser.on('-I PATH', 'specify PATH to add to $LOAD_PATH (may be used more than once)') do |dir|
 
         # parser.on('-r', '--require PATH', 'Require a file') do |path|
+
         # parser.on('-O', '--options PATH', 'Specify the path to a custom options file') do |path|
-        # parser.on('--order TYPE', 'Run examples by the specified order type',
-        #'  [rand] randomized',
-        #'  [random] alias for rand',
-        #'  [random:SEED] e.g. --order random:123') do |o|
+
+         parser.on('--order TYPE', 'Run examples by the specified order type',
+                   '  [rand] randomized',
+                   '  [random] alias for rand',
+                   '  [random:SEED] e.g. --order random:123'
+                   ) do |o|
+          options[:order] = o
+        end
+
+
         # parser.on('--seed SEED', "Equivalent of --order rand:SEED") do |seed|
         # parser.on('-d', '--debugger', 'Enable debugging') do |o|
         # parser.on('--fail-fast', 'Abort the run on first failure') do |o|
