@@ -14,7 +14,7 @@ module MSpec::Core
       OptionParser.should_not_receive(:new)
       parser.parse!([])
     end
-    
+
     describe "--formatter" do
       it "is deprecated" do
         MSpec.should_receive(:deprecate)
@@ -26,5 +26,16 @@ module MSpec::Core
         options[:formatters].first.should eq(["doc"])
       end
     end
+
+    %w[--format -f].each do |option|
+      describe option do
+        it "defines the formatter" do
+          options = Parser.parse!([option, 'doc'])
+          options[:formatters].first.should eq(["doc"])
+        end
+      end
+    end
+
+
   end
 end
