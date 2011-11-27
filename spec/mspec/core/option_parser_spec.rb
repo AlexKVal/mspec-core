@@ -149,5 +149,12 @@ module MSpec::Core
         end
       end
     end
+    
+    describe "--seed" do
+      it "sets the order to rand:SEED" do
+        options = Parser.parse!(%w[--seed 123])
+        options[:order].should eq("rand:123")
+      end
+    end
   end
 end

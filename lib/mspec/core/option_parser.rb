@@ -36,8 +36,10 @@ module MSpec::Core
           options[:order] = o
         end
 
+        parser.on('--seed SEED', "Equivalent of --order rand:SEED") do |seed|
+          options[:order] = "rand:#{seed}"
+        end
 
-        # parser.on('--seed SEED', "Equivalent of --order rand:SEED") do |seed|
         # parser.on('-d', '--debugger', 'Enable debugging') do |o|
         # parser.on('--fail-fast', 'Abort the run on first failure') do |o|
         # parser.on('--failure-exit-code CODE', 'Override the exit code used when there are failing specs') do |o|
