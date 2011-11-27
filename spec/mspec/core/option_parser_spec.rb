@@ -99,12 +99,12 @@ module MSpec::Core
             options = Parser.parse!([option, 'foo:nil'])
             options[:inclusion_filter].should eq(:foo => nil)
           end
-=begin
+
           it "treats 'false' as false" do
             options = Parser.parse!([option, 'foo:false'])
             options[:inclusion_filter].should eq(:foo => false)
           end
-
+=begin
           it "merges muliple invocations" do
             options = Parser.parse!([option, 'foo:false', option, 'bar:true', option, 'foo:true'])
             options[:inclusion_filter].should eq(:foo => true, :bar => true)
