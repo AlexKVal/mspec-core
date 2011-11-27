@@ -93,7 +93,9 @@ FILTERING
                   'examples by adding ~ before the tag (e.g. ~slow)',
                   '(TAG is always converted to a symbol)'
         ) do |tag|
-          options[:inclusion_filter] = {tag.to_sym => true}
+          splits = tag.split(':')
+          value = splits.count > 1 ? eval(splits.last) : true
+          options[:inclusion_filter] = {splits.first.to_sym => value}
         end
 
         # parser.on('--default_path PATH', 'Set the default path where RSpec looks for examples.',

@@ -89,12 +89,12 @@ module MSpec::Core
             options = Parser.parse!([option, 'foo'])
             options[:inclusion_filter].should eq(:foo => true)
           end
-=begin
+
           it "treats 'true' as true" do
             options = Parser.parse!([option, 'foo:true'])
             options[:inclusion_filter].should eq(:foo => true)
           end
-
+=begin
           it "treats 'nil' as nil" do
             options = Parser.parse!([option, 'foo:nil'])
             options[:inclusion_filter].should eq(:foo => nil)
