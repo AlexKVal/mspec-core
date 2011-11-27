@@ -55,8 +55,12 @@ module MSpec::Core
         # parser.on('--drb-port PORT', 'Port to connect to on the DRb server') do |o|
         # parser.on("--tty", "Used internally by rspec when sending commands to other processes") do |o|
         # parser.on('--init', 'Initialize your project with RSpec.') do |cmd|
-        # parser.on('--configure', 'Deprecated. Use --init instead.') do |cmd|
-        #
+
+        parser.on('--configure', 'Deprecated. Use --init instead.') do |cmd|
+          warn "--configure is deprecated with no effect. Use --init instead."
+          exit
+        end
+
         parser.separator("\n  **** Output formatting ****\n\n")
 
         parser.on("-f", "--format FORMATTER", "Choose a formatter",

@@ -193,5 +193,19 @@ module MSpec::Core
         end
       end
     end
+
+    describe "--configure is deprecated" do
+      #it "should puts warning" do
+      #  MSpec.stub!(:exit)
+      #  MSpec.should_receive(:warn)
+      #  Parser.parse!(%w[--configure])
+      #end
+
+      it "should exit process" do
+        expect { Parser.parse!(%w[--configure]) }.to raise_exception(SystemExit)
+      end
+    end
+
+    
   end
 end
