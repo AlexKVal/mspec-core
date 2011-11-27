@@ -116,7 +116,7 @@ module MSpec::Core
             options = Parser.parse!([option, '~foo'])
             options[:exclusion_filter].should eq(:foo => true)
           end
-=begin
+
           it "treats 'true' as true" do
             options = Parser.parse!([option, '~foo:true'])
             options[:exclusion_filter].should eq(:foo => true)
@@ -131,7 +131,6 @@ module MSpec::Core
             options = Parser.parse!([option, '~foo:false'])
             options[:exclusion_filter].should eq(:foo => false)
           end
-=end
         end
       end
     end
