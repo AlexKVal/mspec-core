@@ -72,5 +72,14 @@ module MSpec::Core
         end
       end
     end
+
+    %w[--pattern -P].each do |option|
+      describe option do
+        it "sets the filename pattern" do
+          options = Parser.parse!([option, 'spec/**/*.spec'])
+          options[:pattern].should eq('spec/**/*.spec')
+        end
+      end
+    end
   end
 end

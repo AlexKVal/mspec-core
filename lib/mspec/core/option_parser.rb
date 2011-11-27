@@ -65,7 +65,7 @@ module MSpec::Core
         # parser.on('-b', '--backtrace', 'Enable full backtrace') do |o|
         # parser.on('-c', '--[no-]color', '--[no-]colour', 'Enable color in the output') do |o|
         # parser.on('-p', '--profile', 'Enable profiling of examples with output of the top 10 slowest examples') do |o|
-        
+
         parser.separator <<-FILTERING
 
   **** Filtering and tags ****
@@ -78,10 +78,11 @@ module MSpec::Core
 
 FILTERING
 
-        # parser.on('-P', '--pattern PATTERN', 'Load files matching pattern (default: "spec/**/*_spec.rb")') do |o|
+        parser.on('-P', '--pattern PATTERN', 'Load files matching pattern (default: "spec/**/*_spec.rb")') do |o|
+          options[:pattern] = o
+        end
 
         parser.on('-e', '--example STRING', "Run examples whose full nested names include STRING") do |o|
-          #options[:full_description] ||= []
           options[:full_description] = Regexp.new(Regexp.escape(o))
         end
 
