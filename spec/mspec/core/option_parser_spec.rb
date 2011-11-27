@@ -156,5 +156,21 @@ module MSpec::Core
         options[:order].should eq("rand:123")
       end
     end
+
+    #===== additional coverage =====
+
+    describe "-I PATH" do
+      it "appends PATH to options[:libs] array" do
+        options = Parser.parse!(%w[-I /path/to/file])
+        options[:libs].should include('/path/to/file')
+      end
+
+      it "appends paths from multiple invocations" do
+        options = Parser.parse!(%w[-I /path/to/file -I /another/path -I ../yet/one])
+        options[:libs].should eq(['/path/to/file', '/another/path', '../yet/one'])
+      end
+    end
+
+    
   end
 end

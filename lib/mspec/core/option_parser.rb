@@ -22,7 +22,10 @@ module MSpec::Core
       OptionParser.new do |parser|
         parser.banner = "Usage: mspec [options] [files or directories]\n\n"
 
-        # parser.on('-I PATH', 'specify PATH to add to $LOAD_PATH (may be used more than once)') do |dir|
+        parser.on('-I PATH', 'specify PATH to add to $LOAD_PATH (may be used more than once)') do |dir|
+          options[:libs] ||= []
+          options[:libs] << dir
+        end
 
         # parser.on('-r', '--require PATH', 'Require a file') do |path|
 
