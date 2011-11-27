@@ -93,10 +93,14 @@ FILTERING
                   'examples by adding ~ before the tag (e.g. ~slow)',
                   '(TAG is always converted to a symbol)'
         ) do |tag|
-          splits = tag.split(':')
-          value = splits.count > 1 ? eval(splits.last) : true
           options[:inclusion_filter] ||= {}
-          options[:inclusion_filter].merge!({splits.first.to_sym => value})
+          options[:exclusion_filter] ||= {}
+          
+          parts = tag.split(':')
+          filter_type = parts.first =~ /^~/ ? :exclusion_filter : :inclusion_filter
+          tag_symbol = parts.first.sub('~', '').to_sym
+          value = parts.count > 1 ? eval(parts.last) : true            
+          options[filter_type].merge!({tag_symbol => value})
         end
 
         # parser.on('--default_path PATH', 'Set the default path where RSpec looks for examples.',
