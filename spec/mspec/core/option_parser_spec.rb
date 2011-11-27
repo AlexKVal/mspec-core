@@ -63,5 +63,14 @@ module MSpec::Core
         end
       end
     end
+
+    %w[--example -e].each do |option|
+      describe option do
+        it "escapes the arg" do
+          options = Parser.parse!([option, "this (and that)"])
+          "this (and that)".should match(options[:full_description])
+        end
+      end
+    end
   end
 end

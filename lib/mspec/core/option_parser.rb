@@ -79,7 +79,12 @@ module MSpec::Core
 FILTERING
 
         # parser.on('-P', '--pattern PATTERN', 'Load files matching pattern (default: "spec/**/*_spec.rb")') do |o|
-        # parser.on('-e', '--example STRING', "Run examples whose full nested names include STRING") do |o|
+
+        parser.on('-e', '--example STRING', "Run examples whose full nested names include STRING") do |o|
+          #options[:full_description] ||= []
+          options[:full_description] = Regexp.escape(o)
+        end
+
         # parser.on('-l', '--line_number LINE', 'Specify line number of an example or group (may be specified multiple times)') do |o|
 
         # parser.on('-t', '--tag TAG[:VALUE]',
