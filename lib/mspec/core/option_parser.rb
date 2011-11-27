@@ -88,10 +88,13 @@ FILTERING
 
         # parser.on('-l', '--line_number LINE', 'Specify line number of an example or group (may be specified multiple times)') do |o|
 
-        # parser.on('-t', '--tag TAG[:VALUE]',
-                  #'Run examples with the specified tag, or exclude',
-                  #'examples by ading ~ before the tag (e.g. ~slow)',
-                  #'(TAG is always converted to a symbol)') do |tag|
+        parser.on('-t', '--tag TAG[:VALUE]',
+                  'Run examples with the specified tag, or exclude',
+                  'examples by adding ~ before the tag (e.g. ~slow)',
+                  '(TAG is always converted to a symbol)'
+        ) do |tag|
+          options[:inclusion_filter] = {tag.to_sym => true}
+        end
 
         # parser.on('--default_path PATH', 'Set the default path where RSpec looks for examples.',
                                           #'Can be a path to a file or a directory') do |path|

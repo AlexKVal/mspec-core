@@ -81,5 +81,60 @@ module MSpec::Core
         end
       end
     end
+
+    %w[--tag -t].each do |option|
+      describe option do
+        context "without ~" do
+          it "treats no value as true" do
+            options = Parser.parse!([option, 'foo'])
+            options[:inclusion_filter].should eq(:foo => true)
+          end
+=begin
+          it "treats 'true' as true" do
+            options = Parser.parse!([option, 'foo:true'])
+            options[:inclusion_filter].should eq(:foo => true)
+          end
+
+          it "treats 'nil' as nil" do
+            options = Parser.parse!([option, 'foo:nil'])
+            options[:inclusion_filter].should eq(:foo => nil)
+          end
+
+          it "treats 'false' as false" do
+            options = Parser.parse!([option, 'foo:false'])
+            options[:inclusion_filter].should eq(:foo => false)
+          end
+
+          it "merges muliple invocations" do
+            options = Parser.parse!([option, 'foo:false', option, 'bar:true', option, 'foo:true'])
+            options[:inclusion_filter].should eq(:foo => true, :bar => true)
+          end
+=end
+        end
+=begin
+        context "with ~" do
+          it "treats no value as true" do
+            options = Parser.parse!([option, '~foo'])
+            options[:exclusion_filter].should eq(:foo => true)
+          end
+
+          it "treats 'true' as true" do
+            options = Parser.parse!([option, '~foo:true'])
+            options[:exclusion_filter].should eq(:foo => true)
+          end
+
+          it "treats 'nil' as nil" do
+            options = Parser.parse!([option, '~foo:nil'])
+            options[:exclusion_filter].should eq(:foo => nil)
+          end
+
+          it "treats 'false' as false" do
+            options = Parser.parse!([option, '~foo:false'])
+            options[:exclusion_filter].should eq(:foo => false)
+          end
+        end
+=end
+      end
+    end
   end
 end
