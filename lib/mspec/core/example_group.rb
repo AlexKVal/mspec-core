@@ -1,9 +1,4 @@
-module MSpec
-  module Core
-    class ExampleGroup
-      # def self.describe 
-      #         
-      #       end
-    end
+module MSpec::Core
+  class ExampleGroup
   end
 end

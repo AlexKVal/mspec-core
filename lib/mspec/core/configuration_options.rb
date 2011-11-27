@@ -1,25 +1,19 @@
-module MSpec
-  module Core
-    class ConfigurationOptions
-      attr_reader :options
+module MSpec::Core
+  class ConfigurationOptions
+    attr_reader :options
 
-      def initialize(args)
-        @args = args
-      end
+    def initialize(args)
+      @args = args
+    end
 
-      def parse_options
-        warn if ENV["HOME"].nil?
-      end
+    def parse_options
+      warn if ENV["HOME"].nil?
+    end
 
-      def configure(config)
-        config.libs = nil
-        config.requires = nil
-        config.add_formatter
-      end
-
-      def warn
-
-      end
+    def configure(config)
+      config.libs = nil
+      config.requires = nil
+      config.add_formatter
     end
   end
 end
