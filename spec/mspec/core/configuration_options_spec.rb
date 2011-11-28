@@ -31,6 +31,13 @@ describe MSpec::Core::ConfigurationOptions do
       config.should_receive(:add_formatter).ordered
       opts.configure(config)
     end
+
+    it "sets debug directly" do
+      opts = config_options_object("--debug")
+      config = double("config").as_null_object
+      config.should_receive(:debug=).with(true)
+      opts.configure(config)
+    end
   end
 
   describe "-c, --color and --colour" do
