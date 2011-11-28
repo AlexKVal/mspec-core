@@ -2,6 +2,7 @@ def require_mspec(path)
   require "mspec/#{path}"
 end
 
+require_mspec 'core/filter_manager'
 require_mspec 'core/deprecation'
 
 require_mspec 'core/world'

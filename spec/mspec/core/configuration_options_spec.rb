@@ -42,11 +42,17 @@ describe MSpec::Core::ConfigurationOptions do
 
     it "sends pattern before files_or_directories_to_run" do
       opts = config_options_object(*%w[--pattern **/*.spec])
-      p opts.options
       config = double("config").as_null_object
       config.should_receive(:force).with(:pattern => '**/*.spec').ordered
       config.should_receive(:files_or_directories_to_run=).ordered
       opts.configure(config)
+    end
+
+    it "merges the :exclusion_filter option with the default exclusion_filter" do
+      opts = config_options_object(*%w[--tag ~slow])
+      config = MSpec::Core::Configuration.new
+      opts.configure(config)
+      config.exclusion_filter.should have_key(:slow)
     end
 
     it "forces color_enabled" do
