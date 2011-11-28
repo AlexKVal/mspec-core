@@ -14,6 +14,7 @@ module MSpec::Core
     end
 
     def configure(config)
+      config.force(:color => true) if options[:color]
       order(options.keys, :libs, :requires).each do |key|
         config.send("#{key}=", options[key])
       end

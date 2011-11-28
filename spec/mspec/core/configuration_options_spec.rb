@@ -32,6 +32,13 @@ describe MSpec::Core::ConfigurationOptions do
       opts.configure(config)
     end
 
+    it "forces color_enabled" do
+      opts = config_options_object('--color')
+      config = double("config").as_null_object
+      config.should_receive(:force).with(:color => true)
+      opts.configure(config)
+    end
+
     it "sets debug directly" do
       opts = config_options_object("--debug")
       config = double("config").as_null_object
