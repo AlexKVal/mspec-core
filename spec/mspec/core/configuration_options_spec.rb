@@ -155,4 +155,11 @@ describe MSpec::Core::ConfigurationOptions do
       end
     end
   end
+
+  describe "files_or_directories_to_run" do
+    it "provides no files or directories if spec directory does not exist" do
+      File.stub(:directory?).with("spec").and_return false
+      parse_options()[:files_or_directories_to_run].should be_empty
+    end
+  end
 end

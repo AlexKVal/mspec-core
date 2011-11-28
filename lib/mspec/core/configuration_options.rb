@@ -9,7 +9,8 @@ module MSpec::Core
     def parse_options
       warn if ENV["HOME"].nil?
 
-      @options ||= Parser.parse!(@args)
+      @options ||= command_line_options
+      @options[:files_or_directories_to_run] = [] unless File.directory?("spec")
     end
 
     def configure(config)
@@ -27,5 +28,8 @@ module MSpec::Core
         keys
       end
 
+      def command_line_options
+        Parser.parse!(@args)
+      end
   end
 end
