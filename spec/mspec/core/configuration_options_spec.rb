@@ -41,4 +41,13 @@ describe MSpec::Core::ConfigurationOptions do
       parse_options('-I', 'dir_1', '-I', 'dir_2').should include(:libs => ['dir_1','dir_2'])
     end
   end
+
+  describe '--require' do
+    example "requires files" do
+      parse_options('--require', 'a/path').should include(:requires => ['a/path'])
+    end
+    example "can be used more than once" do
+      parse_options('--require', 'path/1', '--require', 'path/2').should include(:requires => ['path/1','path/2'])
+    end
+  end
 end
