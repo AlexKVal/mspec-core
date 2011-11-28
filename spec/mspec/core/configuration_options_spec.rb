@@ -33,25 +33,25 @@ describe MSpec::Core::ConfigurationOptions do
     end
   end
 
-  describe "-c, --color, and --colour" do
+  describe "-c, --color and --colour" do
     it "sets :color => true" do
       %w(-c --color --colour).each do |arg|
-        parse_options(arg).should include(:color => true)
+        parse_options(arg)[:color].should be_true
       end
     end
   end
 
   describe "--no-color" do
     it "sets :color => false" do
-      parse_options('--no-color').should include(:color => false)
+      parse_options('--no-color')[:color].should be_false
     end
 
     it "overrides previous :color => true" do
-      parse_options('--color', '--no-color').should include(:color => false)
+      parse_options('--color', '--no-color')[:color].should be_false
     end
 
     it "gets overriden by a subsequent :color => true" do
-      parse_options('--no-color', '--color').should include(:color => true)
+      parse_options('--no-color', '--color')[:color].should be_true
     end
   end
 
@@ -88,21 +88,21 @@ describe MSpec::Core::ConfigurationOptions do
   describe "--profile, -p" do
     it "sets :profile_examples => true" do
       %w(-p --profile).each do |arg|
-        parse_options(arg).should include(:profile_examples => true)
+        parse_options(arg)[:profile_examples].should be_true
       end
     end
   end
 
-  describe '--line_number' do
+  describe '--line_number, -l' do
     it "sets :line_number" do
-      %w(-l --line_number).each do |arg|
-        parse_options(arg,'3').should include(:line_numbers => ['3'])
+      %w(--line_number -l).each do |arg|
+        parse_options(arg, '3')[:line_numbers].should == ['3']
       end
     end
 
     it "can be specified multiple times" do
-      %w(-l --line_number).each do |arg|
-        parse_options(arg,'3', arg, '6').should include(:line_numbers => ['3', '6'])
+      %w(--line_number -l).each do |arg|
+        parse_options(arg, '3', arg, '6')[:line_numbers].should == ['3', '6']
       end
     end
   end
@@ -115,9 +115,9 @@ describe MSpec::Core::ConfigurationOptions do
   end
 
   describe "--backtrace, -b" do
-    it "sets :full_backtrace on config" do
-      %w(-b --backtrace).each do |arg|
-        parse_options(arg).should include(:full_backtrace => true)
+    it "sets :full_backtrace => true" do
+      %w(--backtrace -b).each do |arg|
+        parse_options(arg)[:full_backtrace].should be_true
       end
     end
   end
