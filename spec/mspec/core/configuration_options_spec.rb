@@ -40,6 +40,15 @@ describe MSpec::Core::ConfigurationOptions do
       opts.configure(config)
     end
 
+    it "sends pattern before files_or_directories_to_run" do
+      opts = config_options_object(*%w[--pattern **/*.spec])
+      p opts.options
+      config = double("config").as_null_object
+      config.should_receive(:force).with(:pattern => '**/*.spec').ordered
+      config.should_receive(:files_or_directories_to_run=).ordered
+      opts.configure(config)
+    end
+
     it "forces color_enabled" do
       opts = config_options_object('--color')
       config = double("config").as_null_object

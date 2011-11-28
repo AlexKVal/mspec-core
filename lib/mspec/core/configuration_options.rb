@@ -21,9 +21,12 @@ module MSpec::Core
     def configure(config)
       config.force(:color => true) if options[:color]
       config.force(:default_path => options[:default_path]) if options[:default_path]
+      config.force(:pattern => options[:pattern]) if options[:pattern]
+
       order(options.keys, :libs, :requires).each do |key|
         config.send("#{key}=", options[key])
       end
+
       config.add_formatter
     end
 
