@@ -84,4 +84,12 @@ describe MSpec::Core::ConfigurationOptions do
       parse_options('-fSome::Formatter::Class').should include(:formatters => [['Some::Formatter::Class']])
     end
   end
+
+  describe "--profile, -p" do
+    it "sets :profile_examples => true" do
+      %w(-p --profile).each do |arg|
+        parse_options(arg).should include(:profile_examples => true)
+      end
+    end
+  end
 end

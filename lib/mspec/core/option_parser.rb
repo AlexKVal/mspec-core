@@ -89,7 +89,9 @@ module MSpec::Core
           options[:color] = o
         end
 
-        # parser.on('-p', '--profile', 'Enable profiling of examples with output of the top 10 slowest examples') do |o|
+        parser.on('-p', '--profile', 'Enable profiling of examples with output of the top 10 slowest examples') do |o|
+          options[:profile_examples] = o
+        end
 
         parser.separator <<-FILTERING
 
