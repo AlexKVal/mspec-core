@@ -50,4 +50,16 @@ describe MSpec::Core::ConfigurationOptions do
       parse_options('--require', 'path/1', '--require', 'path/2').should include(:requires => ['path/1','path/2'])
     end
   end
+
+  describe "--format, -f" do
+    it "sets :formatter" do
+      [['--format', 'd'], ['-f', 'd'], '-fd'].each do |args|
+        parse_options(*args).should include(:formatters => [['d']])
+      end
+    end
+
+    example "can accept a class name" do
+      parse_options('-fSome::Formatter::Class').should include(:formatters => [['Some::Formatter::Class']])
+    end
+  end
 end
