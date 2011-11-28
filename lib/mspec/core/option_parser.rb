@@ -36,7 +36,7 @@ module MSpec::Core
           options[:custom_options_file] = path
         end
 
-         parser.on('--order TYPE', 'Run examples by the specified order type',
+        parser.on('--order TYPE', 'Run examples by the specified order type',
                    '  [rand] randomized',
                    '  [random] alias for rand',
                    '  [random:SEED] e.g. --order random:123'

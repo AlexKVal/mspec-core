@@ -8,12 +8,24 @@ module MSpec::Core
 
     def parse_options
       warn if ENV["HOME"].nil?
+
+      @options ||= Parser.parse!(@args)
     end
 
     def configure(config)
-      config.libs = nil
-      config.requires = nil
+      order(options.keys, :libs, :requires).each do |key|
+        config.send("#{key}=", options[key])
+      end
       config.add_formatter
     end
+
+    private
+      def order(keys, *ordered)
+        ordered.reverse.each do |key|
+          keys.unshift(key) if keys.delete(key)
+        end
+        keys
+      end
+
   end
 end

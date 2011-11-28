@@ -206,6 +206,5 @@ module MSpec::Core
       end
     end
 
-    
   end
 end
