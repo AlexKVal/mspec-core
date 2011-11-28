@@ -46,7 +46,10 @@ module MSpec::Core
           options[:order] = "rand:#{seed}"
         end
 
-        # parser.on('-d', '--debugger', 'Enable debugging') do |o|
+        parser.on('-d', '--debugger', 'Enable debugging') do |o|
+          options[:debug] = o
+        end
+
         # parser.on('--fail-fast', 'Abort the run on first failure') do |o|
         # parser.on('--failure-exit-code CODE', 'Override the exit code used when there are failing specs') do |o|
         # parser.on('-X', '--[no-]drb', 'Run examples via DRb') do |o|

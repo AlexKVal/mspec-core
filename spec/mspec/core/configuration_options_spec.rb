@@ -87,9 +87,7 @@ describe MSpec::Core::ConfigurationOptions do
 
   describe "--profile, -p" do
     it "sets :profile_examples => true" do
-      %w(-p --profile).each do |arg|
-        parse_options(arg)[:profile_examples].should be_true
-      end
+      %w(--profile -p).each { |arg| parse_options(arg)[:profile_examples].should be_true }
     end
   end
 
@@ -119,6 +117,12 @@ describe MSpec::Core::ConfigurationOptions do
       %w(--backtrace -b).each do |arg|
         parse_options(arg)[:full_backtrace].should be_true
       end
+    end
+  end
+
+  describe "--debug, -d" do
+    it "sets :debug => true" do
+      %w(--debug -d).each { |arg| parse_options("-d")[:debug].should be_true }
     end
   end
 end
