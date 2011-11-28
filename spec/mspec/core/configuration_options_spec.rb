@@ -41,6 +41,20 @@ describe MSpec::Core::ConfigurationOptions do
     end
   end
 
+  describe "--no-color" do
+    it "sets :color => false" do
+      parse_options('--no-color').should include(:color => false)
+    end
+
+    it "overrides previous :color => true" do
+      parse_options('--color', '--no-color').should include(:color => false)
+    end
+
+    it "gets overriden by a subsequent :color => true" do
+      parse_options('--no-color', '--color').should include(:color => true)
+    end
+  end
+
   describe "-I" do
     example "adds to :libs" do
       parse_options('-I', 'a_dir').should include(:libs => ['a_dir'])
