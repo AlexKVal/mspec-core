@@ -23,13 +23,11 @@ module MSpec::Core
         parser.banner = "Usage: mspec [options] [files or directories]\n\n"
 
         parser.on('-I PATH', 'specify PATH to add to $LOAD_PATH (may be used more than once)') do |dir|
-          options[:libs] ||= []
-          options[:libs] << dir
+          (options[:libs] ||= []) << dir
         end
 
         parser.on('-r', '--require PATH', 'Require a file') do |path|
-          options[:requires] ||= []
-          options[:requires] << path
+          (options[:requires] ||= []) << path
         end
 
         parser.on('-O', '--options PATH', 'Specify the path to a custom options file') do |path|
@@ -70,8 +68,7 @@ module MSpec::Core
                   '  [t]extmate',
                   '  custom formatter class name'
         ) do |o|
-          options[:formatters] ||= []
-          options[:formatters] << [o]
+          (options[:formatters] ||= []) << [o]
         end
 
         parser.on("-o", "--out FILE",
@@ -79,8 +76,7 @@ module MSpec::Core
                   'to the previously specified --format, or the default format if',
                   'no format is specified.'
         ) do |o|
-          options[:formatters] ||= [["progress"]]
-          options[:formatters].last << o
+          (options[:formatters] ||= [["progress"]]).last << o
         end
 
         # parser.on('-b', '--backtrace', 'Enable full backtrace') do |o|
@@ -124,11 +120,10 @@ FILTERING
         ) do |tag|
           filter_type = tag =~ /^~/ ? :exclusion_filter : :inclusion_filter
           
-          name, value = tag.gsub(/^(~@|~|@)/, '').split(':')
-          value = value.nil? ? true : eval(value)
+          name, val = tag.gsub(/^(~@|~|@)/, '').split(':')
           
           options[filter_type] ||= {}
-          options[filter_type][name.to_sym] = value
+          options[filter_type][name.to_sym] = val.nil? ? true : eval(val) rescue val
         end
 
         # parser.on('--default_path PATH', 'Set the default path where RSpec looks for examples.',
