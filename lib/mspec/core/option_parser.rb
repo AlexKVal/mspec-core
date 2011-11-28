@@ -50,7 +50,10 @@ module MSpec::Core
           options[:debug] = o
         end
 
-        # parser.on('--fail-fast', 'Abort the run on first failure') do |o|
+        parser.on('--fail-fast', 'Abort the run on first failure') do |o|
+          options[:fail_fast] = o
+        end
+
         # parser.on('--failure-exit-code CODE', 'Override the exit code used when there are failing specs') do |o|
         # parser.on('-X', '--[no-]drb', 'Run examples via DRb') do |o|
         # parser.on('--drb-port PORT', 'Port to connect to on the DRb server') do |o|

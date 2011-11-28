@@ -125,4 +125,14 @@ describe MSpec::Core::ConfigurationOptions do
       %w(--debug -d).each { |arg| parse_options("-d")[:debug].should be_true }
     end
   end
+
+  describe "--fail-fast" do
+    it "defaults to false" do
+      parse_options[:fail_fast].should be_false
+    end
+
+    it "sets fail_fast on config" do
+      parse_options("--fail-fast")[:fail_fast].should be_true
+    end
+  end
 end
