@@ -147,4 +147,12 @@ describe MSpec::Core::ConfigurationOptions do
       parse_options('--failure-exit-code', '2', '--failure-exit-code', '3')[:failure_exit_code].should == 3
     end
   end
+
+  describe "--options -O" do
+    it "sets :custom_options_file" do
+      %w(--options -O).each do |arg|
+        parse_options(arg, 'my.opts')[:custom_options_file].should == 'my.opts'
+      end
+    end
+  end
 end
