@@ -171,8 +171,12 @@ describe MSpec::Core::ConfigurationOptions do
   end
 
   describe "files_or_directories_to_run" do
+    it "parses files from '-c file.rb dir/file.rb'" do
+      parse_options("-c", "file.rb", "dir/file.rb").should include(:files_or_directories_to_run => ["file.rb", "dir/file.rb"])
+    end
+
     it "provides no files or directories if spec directory does not exist" do
-      File.stub(:directory?).with("spec").and_return false
+      File.stub(:directory?).with("spec").and_return true
       parse_options()[:files_or_directories_to_run].should be_empty
     end
   end

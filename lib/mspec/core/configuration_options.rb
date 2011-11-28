@@ -10,7 +10,12 @@ module MSpec::Core
       warn if ENV["HOME"].nil?
 
       @options ||= command_line_options
-      @options[:files_or_directories_to_run] = [] unless File.directory?("spec")
+
+      if @args
+        options[:files_or_directories_to_run] = @args
+      else
+        options[:files_or_directories_to_run] = [] unless File.directory?("spec")
+      end
     end
 
     def configure(config)
