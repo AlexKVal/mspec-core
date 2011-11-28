@@ -79,7 +79,9 @@ module MSpec::Core
           (options[:formatters] ||= [["progress"]]).last << o
         end
 
-        # parser.on('-b', '--backtrace', 'Enable full backtrace') do |o|
+        parser.on('-b', '--backtrace', 'Enable full backtrace') do |o|
+          options[:full_backtrace] = o
+        end
 
         parser.on('-c', '--[no-]color', '--[no-]colour', 'Enable color in the output') do |o|
           options[:color] = o

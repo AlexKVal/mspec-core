@@ -113,4 +113,12 @@ describe MSpec::Core::ConfigurationOptions do
       parse_options('-e','bar').should include(:full_description => /bar/)
     end
   end
+
+  describe "--backtrace, -b" do
+    it "sets :full_backtrace on config" do
+      %w(-b --backtrace).each do |arg|
+        parse_options(arg).should include(:full_backtrace => true)
+      end
+    end
+  end
 end
