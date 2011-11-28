@@ -113,7 +113,9 @@ FILTERING
           options[:full_description] = Regexp.new(Regexp.escape(o))
         end
 
-        # parser.on('-l', '--line_number LINE', 'Specify line number of an example or group (may be specified multiple times)') do |o|
+        parser.on('-l', '--line_number LINE', 'Specify line number of an example or group (may be specified multiple times)') do |o|
+          (options[:line_numbers] ||= []) << o
+        end
 
         parser.on('-t', '--tag TAG[:VALUE]',
                   'Run examples with the specified tag, or exclude',

@@ -92,4 +92,18 @@ describe MSpec::Core::ConfigurationOptions do
       end
     end
   end
+
+  describe '--line_number' do
+    it "sets :line_number" do
+      %w(-l --line_number).each do |arg|
+        parse_options(arg,'3').should include(:line_numbers => ['3'])
+      end
+    end
+
+    it "can be specified multiple times" do
+      %w(-l --line_number).each do |arg|
+        parse_options(arg,'3', arg, '6').should include(:line_numbers => ['3', '6'])
+      end
+    end
+  end
 end
