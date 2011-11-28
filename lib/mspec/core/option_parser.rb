@@ -37,8 +37,7 @@ module MSpec::Core
         parser.on('--order TYPE', 'Run examples by the specified order type',
                    '  [rand] randomized',
                    '  [random] alias for rand',
-                   '  [random:SEED] e.g. --order random:123'
-                   ) do |o|
+                   '  [random:SEED] e.g. --order random:123') do |o|
           options[:order] = o
         end
 
@@ -75,16 +74,14 @@ module MSpec::Core
                   '  [d]ocumentation (group and example names)',
                   '  [h]tml',
                   '  [t]extmate',
-                  '  custom formatter class name'
-        ) do |o|
+                  '  custom formatter class name') do |o|
           (options[:formatters] ||= []) << [o]
         end
 
         parser.on("-o", "--out FILE",
                   'Write output to a file instead of STDOUT. This option applies',
                   'to the previously specified --format, or the default format if',
-                  'no format is specified.'
-        ) do |o|
+                  'no format is specified.') do |o|
           (options[:formatters] ||= [["progress"]]).last << o
         end
 
@@ -127,8 +124,7 @@ FILTERING
         parser.on('-t', '--tag TAG[:VALUE]',
                   'Run examples with the specified tag, or exclude',
                   'examples by adding ~ before the tag (e.g. ~slow)',
-                  '(TAG is always converted to a symbol)'
-        ) do |tag|
+                  '(TAG is always converted to a symbol)') do |tag|
           filter_type = tag =~ /^~/ ? :exclusion_filter : :inclusion_filter
           
           name, val = tag.gsub(/^(~@|~|@)/, '').split(':')
@@ -137,8 +133,10 @@ FILTERING
           options[filter_type][name.to_sym] = val.nil? ? true : eval(val) rescue val
         end
 
-        # parser.on('--default_path PATH', 'Set the default path where RSpec looks for examples.',
-                                          #'Can be a path to a file or a directory') do |path|
+        parser.on('--default_path PATH', 'Set the default path where RSpec looks for examples.',
+                                         'Can be a path to a file or a directory') do |path|
+          options[:default_path] = path
+        end
 
         parser.separator("\n  **** Utility ****\n\n")
 

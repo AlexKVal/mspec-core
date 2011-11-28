@@ -32,6 +32,14 @@ describe MSpec::Core::ConfigurationOptions do
       opts.configure(config)
     end
 
+    it "sends default_path before files_or_directories_to_run" do
+      opts = config_options_object(*%w[--default_path my_specs])
+      config = double("config").as_null_object
+      config.should_receive(:force).with(:default_path => 'my_specs').ordered
+      config.should_receive(:files_or_directories_to_run=).ordered
+      opts.configure(config)
+    end
+
     it "forces color_enabled" do
       opts = config_options_object('--color')
       config = double("config").as_null_object
@@ -172,7 +180,8 @@ describe MSpec::Core::ConfigurationOptions do
 
   describe "files_or_directories_to_run" do
     it "parses files from '-c file.rb dir/file.rb'" do
-      parse_options("-c", "file.rb", "dir/file.rb").should include(:files_or_directories_to_run => ["file.rb", "dir/file.rb"])
+      parse_options("-c", "file.rb", "dir/file.rb")
+        .should include(:files_or_directories_to_run => ["file.rb", "dir/file.rb"])
     end
 
     it "parses dir from 'dir'" do
@@ -180,7 +189,8 @@ describe MSpec::Core::ConfigurationOptions do
     end
 
     it "parses dir and files from 'spec/file1_spec.rb, spec/file2_spec.rb'" do
-      parse_options("dir", "spec/file1_spec.rb", "spec/file2_spec.rb").should include(:files_or_directories_to_run => ["dir", "spec/file1_spec.rb", "spec/file2_spec.rb"])
+      parse_options("dir", "spec/file1_spec.rb", "spec/file2_spec.rb")
+        .should include(:files_or_directories_to_run => ["dir", "spec/file1_spec.rb", "spec/file2_spec.rb"])
     end
 
     it "provides no files or directories if spec directory does not exist" do
