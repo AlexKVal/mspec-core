@@ -135,4 +135,16 @@ describe MSpec::Core::ConfigurationOptions do
       parse_options("--fail-fast")[:fail_fast].should be_true
     end
   end
+
+  describe "--failure-exit-code" do
+    it "sets :failure_exit_code" do
+      (0..2).each do |code|
+        parse_options('--failure-exit-code', code.to_s)[:failure_exit_code].should == code
+      end
+    end
+
+    it "overrides previous :failure_exit_code" do
+      parse_options('--failure-exit-code', '2', '--failure-exit-code', '3')[:failure_exit_code].should == 3
+    end
+  end
 end

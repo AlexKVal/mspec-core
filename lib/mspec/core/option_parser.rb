@@ -54,7 +54,10 @@ module MSpec::Core
           options[:fail_fast] = o
         end
 
-        # parser.on('--failure-exit-code CODE', 'Override the exit code used when there are failing specs') do |o|
+        parser.on('--failure-exit-code CODE', Integer, 'Override the exit code used when there are failing specs') do |code|
+          options[:failure_exit_code] = code
+        end
+
         # parser.on('-X', '--[no-]drb', 'Run examples via DRb') do |o|
         # parser.on('--drb-port PORT', 'Port to connect to on the DRb server') do |o|
         # parser.on("--tty", "Used internally by rspec when sending commands to other processes") do |o|
