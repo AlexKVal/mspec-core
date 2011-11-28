@@ -84,7 +84,11 @@ module MSpec::Core
         end
 
         # parser.on('-b', '--backtrace', 'Enable full backtrace') do |o|
-        # parser.on('-c', '--[no-]color', '--[no-]colour', 'Enable color in the output') do |o|
+
+        parser.on('-c', '--[no-]color', '--[no-]colour', 'Enable color in the output') do |o|
+          options[:color] = true
+        end
+
         # parser.on('-p', '--profile', 'Enable profiling of examples with output of the top 10 slowest examples') do |o|
 
         parser.separator <<-FILTERING

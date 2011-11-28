@@ -33,6 +33,14 @@ describe MSpec::Core::ConfigurationOptions do
     end
   end
 
+  describe "-c, --color, and --colour" do
+    it "sets :color => true" do
+      %w(-c --color --colour).each do |arg|
+        parse_options(arg).should include(:color => true)
+      end
+    end
+  end
+
   describe "-I" do
     example "adds to :libs" do
       parse_options('-I', 'a_dir').should include(:libs => ['a_dir'])
