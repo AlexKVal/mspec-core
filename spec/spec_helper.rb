@@ -29,7 +29,8 @@ Spork.prefork do
 
     # runtime options
     c.treat_symbols_as_metadata_keys_with_true_values = true
-    #c.color = !in_editor?
+    # c.color = !in_editor?
+    # c.include FakeFS::SpecHelpers, :fakefs
   end
 end
 
