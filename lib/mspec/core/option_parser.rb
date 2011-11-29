@@ -65,7 +65,10 @@ module MSpec::Core
           options[:drb_port] = port
         end
 
-        # parser.on("--tty", "Used internally by rspec when sending commands to other processes") do |o|
+        parser.on("--tty", "Used internally by rspec when sending commands to other processes") do |o|
+          options[:tty] = o
+        end
+
         # parser.on('--init', 'Initialize your project with RSpec.') do |cmd|
 
         parser.on('--configure', 'Deprecated. Use --init instead.') do |cmd|

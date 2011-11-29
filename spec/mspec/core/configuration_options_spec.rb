@@ -73,7 +73,7 @@ describe MSpec::Core::ConfigurationOptions do
       ["--drb-port", "37", :drb_port, 37],
       ["--backtrace", nil, :full_backtrace, true],
       ["--profile", nil, :profile_examples, true],
-      #       ["--tty", nil, :tty, true]
+      ["--tty", nil, :tty, true]
     ].each do |cli_option, cli_value, config_key, config_value|
       it "forces #{config_key}" do
         opts = config_options_object(*[cli_option, cli_value].compact)
