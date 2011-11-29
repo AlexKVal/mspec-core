@@ -61,6 +61,14 @@ describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' d
           end
         end
       end
+
+      context "and config variable set" do
+        it "uses configured value" do
+          with_MSPEC_DRB_set_to('9000') do
+            command_line(%w[--drb-port 5678]).drb_port.should eq(5678)
+          end
+        end
+      end
     end
   end
 end
