@@ -56,7 +56,7 @@ module MSpec::Core
       end
 
       def file_options
-        [options_from_file(global_options_file)]
+        [options_from_file( global_options_file ).merge( options_from_file( local_options_file ))]
       end
 
       def command_line_options
@@ -68,7 +68,7 @@ module MSpec::Core
       end
 
       def options_from_file(path)
-        @options_from_file = (path && File.exists?(path)) ? File.open(path, 'r') {|f| Parser.parse!(f.read.split)} : {}
+        path && File.exists?(path) ? File.open(path, 'r') {|f| Parser.parse!(f.read.split)} : {}
       end
 
       def global_options_file
@@ -78,6 +78,10 @@ module MSpec::Core
           warn "Unable to find ~/.rspec because the HOME environment variable is not set"
           nil
         end
+      end
+
+      def local_options_file
+        File.join(File.expand_path("./"), ".rspec")
       end
   end
 end
