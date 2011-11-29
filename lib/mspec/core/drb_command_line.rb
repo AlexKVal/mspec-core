@@ -6,7 +6,7 @@ module MSpec
       end
 
       def run(err, out)
-        raise DRb::DRbConnError if @options.drb_argv.empty?
+        # raise DRb::DRbConnError if @options.drb_argv.empty?
       end
 
       def drb_port
