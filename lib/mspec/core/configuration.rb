@@ -18,6 +18,10 @@ module MSpec::Core
       filter_manager.exclusions
     end
 
+    def full_backtrace=(flag)
+      
+    end
+
     def add_formatter      
     end
   end
