@@ -237,4 +237,14 @@ describe MSpec::Core::ConfigurationOptions do
       parse_options()[:files_or_directories_to_run].should be_empty
     end
   end
+
+  describe "default_path" do
+    it "gets set before files_or_directories_to_run" do
+      config = double("config").as_null_object
+      config.should_receive(:force).with(:default_path => 'foo').ordered
+      config.should_receive(:files_or_directories_to_run=).ordered
+      opts = config_options_object("--default_path", "foo")
+      opts.configure(config)
+    end
+  end
 end

@@ -9,13 +9,12 @@ module MSpec::Core
     def configure(config)
       config.filter_manager = filter_manager
 
-      # config.force(:color => true) if options[:color]
-      # config.force(:default_path => options[:default_path]) if options[:default_path]
-      # config.force(:pattern => options[:pattern]) if options[:pattern]
-
       order(options.keys, :libs, :requires).each do |key|
-        config.force(key => options[key]) if force?(key)
-        config.send("#{key}=", options[key])
+        if force?(key)
+          config.force(key => options[key])
+        else
+          config.send("#{key}=", options[key])
+        end
       end
 
       config.add_formatter
