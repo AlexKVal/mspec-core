@@ -24,6 +24,8 @@ module MSpec::Core
       @options ||= extract_filters_from(*all_configs).inject do |merged, pending|
         merged.merge(pending)
       end
+      puts "@options: " + @options.inspect
+      @options
     end
 
     def filter_manager
@@ -53,6 +55,8 @@ module MSpec::Core
 
       def all_configs
         @all_configs ||= file_options << command_line_options << env_options
+        puts "@all_configs: " + @all_configs.inspect
+        @all_configs
       end
 
       def file_options

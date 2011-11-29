@@ -263,5 +263,10 @@ describe MSpec::Core::ConfigurationOptions do
       options[:debug].should be_true
       options[:drb].should be_true
     end
+
+    it "prefers SPEC_OPTS over CLI" do
+      ENV["SPEC_OPTS"] = "--format spec_opts"
+      parse_options("--format", "cli")[:formatters].should eq([['spec_opts']])
+    end
   end
 end
