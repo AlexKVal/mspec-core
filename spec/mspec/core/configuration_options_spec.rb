@@ -218,9 +218,21 @@ describe MSpec::Core::ConfigurationOptions do
   end
 
   describe "--drb, -X" do
-    it "does not send --drb back to the parser after parsing options" do
-      config_options_object("--drb", "--color").drb_argv.should_not include("--drb")
-    end
+    # actually this is testing of DrbOptions
+    # so lets implement DrbOptions first
+
+    # context "combined with --debug" do
+      # it "turns off the debugger if --drb is specified first" do
+      #   config_options_object("--drb", "--debug").drb_argv.should_not include("--debug")
+      #   config_options_object("--drb", "-d"     ).drb_argv.should_not include("--debug")
+      #   config_options_object("-X",    "--debug").drb_argv.should_not include("--debug")
+      #   config_options_object("-X",    "-d"     ).drb_argv.should_not include("--debug")
+      # end
+    # end
+
+    # it "does not send --drb back to the parser after parsing options" do
+    #   config_options_object("--drb", "--color").drb_argv.should_not include("--drb")
+    # end
   end
 
   describe "--no-drb" do
