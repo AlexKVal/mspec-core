@@ -70,7 +70,7 @@ describe MSpec::Core::ConfigurationOptions do
       ["--drb", nil, :drb, true],
       ["--order", "rand", :order, "rand"],
       ["--seed", "37", :order, "rand:37"],
-      #       ["--drb-port", "37", :drb_port, 37],
+      ["--drb-port", "37", :drb_port, 37],
       #       ["--backtrace", nil, :full_backtrace, true], # method full_backtrace=
       #       ["--profile", nil, :profile_examples, true],
       #       ["--tty", nil, :tty, true]

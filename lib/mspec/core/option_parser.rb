@@ -61,7 +61,10 @@ module MSpec::Core
           options[:drb] = o
         end
 
-        # parser.on('--drb-port PORT', 'Port to connect to on the DRb server') do |o|
+        parser.on('--drb-port PORT', Integer, 'Port to connect to on the DRb server') do |port|
+          options[:drb_port] = port
+        end
+
         # parser.on("--tty", "Used internally by rspec when sending commands to other processes") do |o|
         # parser.on('--init', 'Initialize your project with RSpec.') do |cmd|
 
