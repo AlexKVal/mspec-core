@@ -63,8 +63,8 @@ describe MSpec::Core::ConfigurationOptions do
     end
 
     [
-      ["--failure-exit-code", "3", :failure_exit_code, 3]# ,
-      #       ["--pattern", "foo/bar", :pattern, "foo/bar"],
+      ["--failure-exit-code", "3", :failure_exit_code, 3],
+             ["--pattern", "foo/bar", :pattern, "foo/bar"]#,
       #       ["--failure-exit-code", "37", :failure_exit_code, 37],
       #       ["--default_path", "behavior", :default_path, "behavior"],
       #       ["--drb", nil, :drb, true],
