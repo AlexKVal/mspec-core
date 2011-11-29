@@ -10,7 +10,7 @@ module MSpec
       end
 
       def drb_port
-        @drb_port = ENV['MSPEC_DRB'].nil? ? @options.options[:drb_port] : ENV['MSPEC_DRB'].to_i
+        @drb_port = ENV['MSPEC_DRB'].nil? ? @options.options[:drb_port] : ENV['MSPEC_DRB']
         @drb_port ||= 8989
       end
     end
