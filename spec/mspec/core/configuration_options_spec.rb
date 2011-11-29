@@ -217,6 +217,26 @@ describe MSpec::Core::ConfigurationOptions do
     end
   end
 
+  describe "--drb, -X" do
+    it "does not send --drb back to the parser after parsing options" do
+      config_options_object("--drb", "--color").drb_argv.should_not include("--drb")
+    end
+  end
+
+  describe "--no-drb" do
+    it "disables drb" do
+      parse_options("--no-drb").should include(:drb => false)
+    end
+
+    it "overrides a previous drb => true" do
+      parse_options("--drb", "--no-drb").should include(:drb => false)
+    end
+
+    it "gets overriden by a subsquent drb => true" do
+      parse_options("--no-drb", "--drb").should include(:drb => true)
+    end
+  end
+
   describe "files_or_directories_to_run" do
     it "parses files from '-c file.rb dir/file.rb'" do
       parse_options("-c", "file.rb", "dir/file.rb")

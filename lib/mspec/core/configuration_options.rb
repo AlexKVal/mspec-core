@@ -30,6 +30,10 @@ module MSpec::Core
       @filter_manager ||= FilterManager.new
     end
 
+    def drb_argv
+      []
+    end
+
     private
       NON_FORCED_OPTIONS = [:debug, :requires, :libs, :files_or_directories_to_run, :line_numbers, :full_description]
 
