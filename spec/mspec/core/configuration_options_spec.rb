@@ -268,5 +268,11 @@ describe MSpec::Core::ConfigurationOptions do
       ENV["SPEC_OPTS"] = "--format spec_opts"
       parse_options("--format", "cli")[:formatters].should eq([['spec_opts']])
     end
+
+    it "prefers CLI over file options" do
+      File.open("./.rspec", "w") {|f| f << "--format local"}
+      File.open("~/.rspec", "w") {|f| f << "--format global"}
+      parse_options("--format", "cli")[:formatters].should eq([['cli']])
+    end
   end
 end
