@@ -18,6 +18,7 @@ module MSpec::Core
       argv << '--order'     << @submitted_options[:order] if @submitted_options[:order]
 
       add_full_descriptions(argv)
+      add_failure_exit_code(argv)
 
       argv + @submitted_options[:files_or_directories_to_run]
     end
@@ -26,6 +27,12 @@ module MSpec::Core
       def add_full_descriptions(argv)
         if @submitted_options[:full_description]
           argv << '--example' << @submitted_options[:full_description].source.delete('\\')
+        end
+      end
+
+      def add_failure_exit_code(argv)
+        if @submitted_options[:failure_exit_code]
+          argv << '--failure-exit-code' << @submitted_options[:failure_exit_code].to_s
         end
       end
   end

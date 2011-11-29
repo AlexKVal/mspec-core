@@ -16,7 +16,6 @@ describe MSpec::Core::DrbOptions do
     end
 
     it "includes --failure-exit-code" do
-      pending
       config_options_object(*%w[--failure-exit-code 2]).drb_argv.should include("--failure-exit-code", "2")
     end
 
@@ -35,6 +34,27 @@ describe MSpec::Core::DrbOptions do
 
       it "unescapes characters which were escaped upon storing --example originally" do
         config_options_object("--example", "foo\\ bar").drb_argv.should include("--example", "foo bar")
+      end
+    end
+
+    context "with formatters" do
+      it "includes the formatters" do
+        pending
+        config_options_object(*%w[--format d]).drb_argv.should include("--format", "d")
+      end
+
+      it "leaves formatters intact" do
+        pending
+        coo = config_options_object("--format", "d")
+        coo.drb_argv
+        coo.options[:formatters].should eq([["d"]])
+      end
+
+      it "leaves output intact" do
+        pending
+        coo = config_options_object("--format", "p", "--out", "foo.txt", "--format", "d")
+        coo.drb_argv
+        coo.options[:formatters].should eq([["p","foo.txt"],["d"]])
       end
     end
   end
