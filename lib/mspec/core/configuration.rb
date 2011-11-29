@@ -7,6 +7,7 @@ module MSpec::Core
     attr_accessor :pattern
     attr_accessor :default_path
     attr_accessor :drb
+    attr_accessor :order
 
     def inclusion_filter
       filter_manager.inclusions
