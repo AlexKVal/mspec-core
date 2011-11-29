@@ -64,7 +64,7 @@ module MSpec::Core
       end
 
       def command_line_options
-        Parser.parse!(@args).merge :files_or_directories_to_run => @args
+        @command_line_options = Parser.parse!(@args).merge :files_or_directories_to_run => @args
       end
 
       def env_options
@@ -72,7 +72,8 @@ module MSpec::Core
       end
 
       def options_from_file(path)
-        path && File.exists?(path) ? File.open(path, 'r') {|f| Parser.parse!(f.read.split)} : {}
+        return {} unless path && File.exists?(path)
+        Parser.parse!(File.read(path).split(/\n+/).map {|l| l.split}.flatten)
       end
 
       def global_options_file
@@ -85,7 +86,11 @@ module MSpec::Core
       end
 
       def local_options_file
-        File.join(File.expand_path("./"), ".rspec")
+        ".rspec"
+      end
+
+      def custom_options_file
+        command_line_options[:custom_options_file]
       end
   end
 end

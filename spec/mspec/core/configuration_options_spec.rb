@@ -280,5 +280,16 @@ describe MSpec::Core::ConfigurationOptions do
       File.open("~/.rspec", "w") {|f| f << "--format global"}
       parse_options[:formatters].should eq([['local']])
     end
+
+    context "with custom options file" do
+      it "ignores local and global options files" do
+        File.open("./.rspec", "w") {|f| f << "--format local"}
+        File.open("~/.rspec", "w") {|f| f << "--format global"}
+        File.open("./custom.opts", "w") {|f| f << "--color"}
+        options = parse_options("-O", "./custom.opts")
+        options[:format].should be_nil
+        options[:color].should be_true
+      end
+    end
   end
 end
