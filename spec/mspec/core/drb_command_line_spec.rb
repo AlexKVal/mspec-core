@@ -20,4 +20,10 @@ describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' d
   def run_with(args)
     command_line(args).run(err, out)
   end
+
+  context "without server running" do
+    it "raises an error" do
+      expect { run_with [] }.should raise_error(DRb::DRbConnError)
+    end
+  end
 end
