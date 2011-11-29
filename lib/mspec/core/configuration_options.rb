@@ -31,8 +31,7 @@ module MSpec::Core
     end
 
     def drb_argv
-      # DrbOptions.new(options, filter_manager).options
-      []
+      DrbOptions.new(options, filter_manager).options
     end
 
     private
