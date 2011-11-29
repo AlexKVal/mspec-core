@@ -9,6 +9,7 @@ module MSpec::Core
     attr_accessor :drb
     attr_accessor :drb_port
     attr_accessor :order
+    attr_accessor :profile_examples
 
     def inclusion_filter
       filter_manager.inclusions
