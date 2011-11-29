@@ -6,6 +6,7 @@ module MSpec::Core
     attr_accessor :failure_exit_code
     attr_accessor :pattern
     attr_accessor :default_path
+    attr_accessor :drb
 
     def inclusion_filter
       filter_manager.inclusions

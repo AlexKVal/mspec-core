@@ -57,7 +57,10 @@ module MSpec::Core
           options[:failure_exit_code] = code
         end
 
-        # parser.on('-X', '--[no-]drb', 'Run examples via DRb') do |o|
+        parser.on('-X', '--[no-]drb', 'Run examples via DRb') do |o|
+          options[:drb] = o
+        end
+
         # parser.on('--drb-port PORT', 'Port to connect to on the DRb server') do |o|
         # parser.on("--tty", "Used internally by rspec when sending commands to other processes") do |o|
         # parser.on('--init', 'Initialize your project with RSpec.') do |cmd|

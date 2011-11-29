@@ -67,7 +67,7 @@ describe MSpec::Core::ConfigurationOptions do
       ["--pattern", "foo/bar", :pattern, "foo/bar"],
       ["--failure-exit-code", "37", :failure_exit_code, 37],
       ["--default_path", "behavior", :default_path, "behavior"],
-      #       ["--drb", nil, :drb, true],
+      ["--drb", nil, :drb, true],
       #       ["--order", "rand", :order, "rand"],
       #       ["--seed", "37", :order, "rand:37"],
       #       ["--drb-port", "37", :drb_port, 37],
