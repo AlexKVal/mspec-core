@@ -9,11 +9,12 @@ module MSpec::Core
     def configure(config)
       config.filter_manager = filter_manager
 
-      config.force(:color => true) if options[:color]
-      config.force(:default_path => options[:default_path]) if options[:default_path]
-      config.force(:pattern => options[:pattern]) if options[:pattern]
+      # config.force(:color => true) if options[:color]
+      # config.force(:default_path => options[:default_path]) if options[:default_path]
+      # config.force(:pattern => options[:pattern]) if options[:pattern]
 
       order(options.keys, :libs, :requires).each do |key|
+        config.force(key => options[key]) if force?(key)
         config.send("#{key}=", options[key])
       end
 
@@ -31,6 +32,12 @@ module MSpec::Core
     end
 
     private
+      NON_FORCED_OPTIONS = [:debug, :requires, :libs, :files_or_directories_to_run, :line_numbers, :full_description]
+
+      def force?(key)
+        !NON_FORCED_OPTIONS.include?(key)
+      end
+
       def order(keys, *ordered)
         ordered.reverse.each do |key|
           keys.unshift(key) if keys.delete(key)

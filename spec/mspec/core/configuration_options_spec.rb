@@ -62,6 +62,30 @@ describe MSpec::Core::ConfigurationOptions do
       opts.configure(config)
     end
 
+    [
+      ["--failure-exit-code", "3", :failure_exit_code, 3]# ,
+      #       ["--pattern", "foo/bar", :pattern, "foo/bar"],
+      #       ["--failure-exit-code", "37", :failure_exit_code, 37],
+      #       ["--default_path", "behavior", :default_path, "behavior"],
+      #       ["--drb", nil, :drb, true],
+      #       ["--order", "rand", :order, "rand"],
+      #       ["--seed", "37", :order, "rand:37"],
+      #       ["--drb-port", "37", :drb_port, 37],
+      #       ["--backtrace", nil, :full_backtrace, true], # method full_backtrace=
+      #       ["--profile", nil, :profile_examples, true],
+      #       ["--tty", nil, :tty, true]
+    ].each do |cli_option, cli_value, config_key, config_value|
+      it "forces #{config_key}" do
+        opts = config_options_object(*[cli_option, cli_value].compact)
+        config = MSpec::Core::Configuration.new
+        config.should_receive(:force) do |pair|
+          pair.keys.first.should eq(config_key)
+          pair.values.first.should eq(config_value)
+        end
+        opts.configure(config)
+      end
+    end
+
     it "sets debug directly" do
       opts = config_options_object("--debug")
       config = double("config").as_null_object
