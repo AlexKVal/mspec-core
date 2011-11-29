@@ -9,8 +9,15 @@ describe MSpec::Core::DrbOptions do
       config_options_object(*%w[ a --drb b --color c ]).drb_argv.should =~ %w[ --color a b c ]
     end
 
-    it "includes --fail-fast" do
-      config_options_object(*%w[--fail-fast]).drb_argv.should include("--fail-fast")
+    %w(--color --fail-fast --profile --backtrace --tty).each do |option|
+      it "includes #{option}" do
+        config_options_object("#{option}").drb_argv.should include("#{option}")
+      end
+    end
+
+    it "includes --failure-exit-code" do
+      pending
+      config_options_object(*%w[--failure-exit-code 2]).drb_argv.should include("--failure-exit-code", "2")
     end
 
     it "includes --options" do
@@ -27,6 +34,7 @@ describe MSpec::Core::DrbOptions do
       end
 
       it "unescapes characters which were escaped upon storing --example originally" do
+        pending
         config_options_object("--example", "foo\\ bar").drb_argv.should include("--example", "foo bar")
       end
     end
