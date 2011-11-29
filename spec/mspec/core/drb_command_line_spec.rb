@@ -26,4 +26,24 @@ describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' d
       expect { run_with [] }.should raise_error(DRb::DRbConnError)
     end
   end
+
+  describe "--drb-port" do
+    def with_MSPEC_DRB_set_to(val)
+      original = ENV['MSPEC_DRB']
+      ENV['MSPEC_DRB'] = val
+      begin
+        yield
+      ensure
+        ENV['MSPEC_DRB'] = original
+      end
+    end
+
+    context "without MSPEC_DRB environment variable set" do
+      it "defaults to 8989" do
+        with_MSPEC_DRB_set_to(nil) do
+          command_line([]).drb_port.should eq(8989)
+        end
+      end
+    end
+  end
 end
