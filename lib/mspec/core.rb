@@ -9,6 +9,7 @@ require_mspec 'core/world'
 require_mspec 'core/configuration'
 require_mspec 'core/option_parser'
 require_mspec 'core/configuration_options'
+require_mspec 'core/drb_command_line'
 require_mspec 'core/example_group'
 require_mspec 'core/version'
 
