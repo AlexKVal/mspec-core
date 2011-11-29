@@ -13,8 +13,7 @@ module MSpec::Core
         MSpec.deprecate("the --formatter option", "-f or --format")
         args[args.index("--formatter")] = "--format"
       end
-      options = {}
-      parser(options).parse!(args)
+      parser(options = {}).parse!(args)
       options
     end
 

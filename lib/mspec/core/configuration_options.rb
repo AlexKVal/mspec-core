@@ -56,8 +56,7 @@ module MSpec::Core
       end
 
       def file_options
-        global_options_file
-        []
+        [options_from_file(global_options_file)]
       end
 
       def command_line_options
@@ -66,6 +65,10 @@ module MSpec::Core
 
       def env_options
         ENV["SPEC_OPTS"] ? Parser.parse!(ENV["SPEC_OPTS"].split) : {}
+      end
+
+      def options_from_file(path)
+        @options_from_file = (path && File.exists?(path)) ? File.open(path, 'r') {|f| Parser.parse!(f.read.split)} : {}
       end
 
       def global_options_file
