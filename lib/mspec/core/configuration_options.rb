@@ -21,12 +21,6 @@ module MSpec::Core
     end
 
     def parse_options
-      # if @args
-      #   options[:files_or_directories_to_run] = @args
-      # else
-      #   options[:files_or_directories_to_run] = [] unless File.directory?("spec")
-      # end
-      
       @options ||= extract_filters_from(*all_configs).inject do |merged, pending|
         merged.merge(pending)
       end
@@ -57,7 +51,7 @@ module MSpec::Core
 
       def file_options
         global_options_file
-        [{}]
+        []
       end
 
       def command_line_options

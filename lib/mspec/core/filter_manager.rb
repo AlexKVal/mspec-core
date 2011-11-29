@@ -8,15 +8,17 @@ module MSpec
       end
 
       def include(*args)
-        update(@exclusions, @inclusions, *args)
-      end
-
-      def exclude(*args)
         update(@inclusions, @exclusions, *args)
       end
 
-      def update(target, opposites, *updates)
-        target.merge!(updates.last).each_key {|k| opposites.delete(k)}
+      def exclude(*args)
+        update(@exclusions, @inclusions, *args)
+      end
+
+      def update(orig, opposite, *updates)
+        updated = updates.last.merge(orig)
+        opposite.each_key {|k| updated.delete(k)}
+        orig.replace(updated)
       end
     end
   end
