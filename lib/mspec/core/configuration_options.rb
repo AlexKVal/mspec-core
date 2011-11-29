@@ -61,11 +61,11 @@ module MSpec::Core
       end
 
       def command_line_options
-        @command_line_options ||= Parser.parse!(@args).merge :files_or_directories_to_run => @args
+        Parser.parse!(@args).merge :files_or_directories_to_run => @args
       end
 
       def env_options
-        {}
+        ENV["SPEC_OPTS"] ? Parser.parse!(ENV["SPEC_OPTS"].split) : {}
       end
 
       def global_options_file

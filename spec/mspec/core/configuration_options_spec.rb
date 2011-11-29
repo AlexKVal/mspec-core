@@ -247,4 +247,21 @@ describe MSpec::Core::ConfigurationOptions do
       opts.configure(config)
     end
   end
+
+  describe "sources: ~/.rspec, ./.rspec, custom, CLI, and SPEC_OPTS" do
+    before(:each) do
+      FileUtils.mkpath(File.expand_path("~"))
+    end
+
+    it "merges global, local, SPEC_OPTS, and CLI" do
+      #File.open("./.rspec", "w") {|f| f << "--line 37"}
+      #File.open("~/.rspec", "w") {|f| f << "--color"}
+      ENV["SPEC_OPTS"] = "--debug"
+      options = parse_options("--drb")
+      #options[:color].should be_true
+      #options[:line_numbers].should eq(["37"])
+      options[:debug].should be_true
+      options[:drb].should be_true
+    end
+  end
 end
