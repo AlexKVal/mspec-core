@@ -44,6 +44,13 @@ describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' d
           command_line([]).drb_port.should eq(8989)
         end
       end
+
+      it "sets the DRb port from command line options" do
+        with_MSPEC_DRB_set_to(nil) do
+          command_line(["--drb-port", "1234"]).drb_port.should eq(1234)
+          command_line(["--drb-port", "5678"]).drb_port.should eq(5678)
+        end
+      end
     end
   end
 end
