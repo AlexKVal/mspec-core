@@ -274,5 +274,11 @@ describe MSpec::Core::ConfigurationOptions do
       File.open("~/.rspec", "w") {|f| f << "--format global"}
       parse_options("--format", "cli")[:formatters].should eq([['cli']])
     end
+
+    it "prefers local file options over global" do
+      File.open("./.rspec", "w") {|f| f << "--format local"}
+      File.open("~/.rspec", "w") {|f| f << "--format global"}
+      parse_options[:formatters].should eq([['local']])
+    end
   end
 end
