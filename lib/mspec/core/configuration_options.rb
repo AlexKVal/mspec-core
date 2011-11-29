@@ -32,8 +32,8 @@ module MSpec::Core
       end
     end
 
-    def filter_manger
-      @filter_manger ||= Filter.Manager.new
+    def filter_manager
+      @filter_manager ||= FilterManager.new
     end
 
     private
@@ -57,7 +57,7 @@ module MSpec::Core
 
       def file_options
         global_options_file
-        {}
+        [{}]
       end
 
       def command_line_options
