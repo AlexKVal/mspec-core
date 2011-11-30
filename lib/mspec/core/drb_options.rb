@@ -58,11 +58,11 @@ module MSpec::Core
       end
 
       def add_filter(argv, name, hash)
-        #puts "name: " + name.inspect
-        #puts "hash: " + hash.inspect
         hash.each_key do |key|
-          argv << '--tag' << "#{'~' if name == :exclusion}#{key}:#{hash[key]}"
-          #puts "argv: " + argv.inspect
+          argv << "--tag"
+          tilda = (name == :exclusion) ? '~' : ''
+          value = ":#{hash[key]}" unless hash[key].is_a?(TrueClass)
+          argv << "#{tilda}#{key}#{value}"
         end unless hash.empty?
       end
 

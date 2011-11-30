@@ -81,7 +81,7 @@ describe MSpec::Core::DrbOptions do
 
       it "includes multiple paths" do
         config_options_object(*%w[-I dir_1 -I dir_2 -I dir_3]).drb_argv.should eq(
-                               %w[-I dir_1 -I dir_2 -I dir_3]
+          %w[-I dir_1 -I dir_2 -I dir_3]
         )
       end
     end
@@ -93,16 +93,54 @@ describe MSpec::Core::DrbOptions do
 
       it "includes multiple paths" do
         config_options_object(*%w[--require dir/ --require file.rb]).drb_argv.should eq(
-                               %w[--require dir/ --require file.rb]
+          %w[--require dir/ --require file.rb]
         )
       end
     end
 
     context "with tags" do
       it "includes the inclusion tags" do
-        pending "untill filter_manager"
         coo = config_options_object("--tag", "wip")
         coo.drb_argv.should     eq(["--tag", "wip"])
+      end
+
+      it "includes the inclusion tags with values" do
+        coo = config_options_object("--tag", "tag:foo")
+        coo.drb_argv.should eq(["--tag", "tag:foo"])
+      end
+
+      it "leaves inclusion tags intact" do
+        coo = config_options_object("--tag", "tag")
+        coo.drb_argv
+        coo.filter_manager.inclusions.should eq( {:tag=>true} )
+      end
+
+      it "leaves inclusion tags with values intact" do
+        coo = config_options_object("--tag", "tag:foo")
+        coo.drb_argv
+        coo.filter_manager.inclusions.should eq( {:tag=>'foo'} )
+      end
+
+      it "includes the exclusion tags" do
+        coo = config_options_object("--tag", "~tag")
+        coo.drb_argv.should eq(["--tag", "~tag"])
+      end
+
+      it "includes the exclusion tags with values" do
+        coo = config_options_object("--tag", "~tag:foo")
+        coo.drb_argv.should eq(["--tag", "~tag:foo"])
+      end
+
+      it "leaves exclusion tags intact" do
+        coo = config_options_object("--tag", "~tag")
+        coo.drb_argv
+        coo.filter_manager.exclusions.should include(:tag=>true)
+      end
+
+      it "leaves exclusion tags with values intact" do
+        coo = config_options_object("--tag", "~tag:foo")
+        coo.drb_argv
+        coo.filter_manager.exclusions.should include(:tag=>'foo')
       end
     end
   end
