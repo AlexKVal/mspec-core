@@ -62,8 +62,16 @@ describe MSpec::Core::DrbOptions do
       end
     end
 
-    context "with line_numbers" do
-      pending
+    context "with --line_number" do
+      it "includes --line_number" do
+        config_options_object(*%w[--line_number 35]).drb_argv.should include('--line_number', '35')
+      end
+
+      it "includes multiple lines" do
+        config_options_object(*%w[-l 35 -l 125 -l 4]).drb_argv.should include(
+          '--line_number', '35', '--line_number', '125', '--line_number', '4'
+        )
+      end
     end
 
     context "with libs" do

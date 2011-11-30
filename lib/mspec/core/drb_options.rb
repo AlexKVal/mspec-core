@@ -19,6 +19,7 @@ module MSpec::Core
 
       add_full_descriptions(argv)
       add_failure_exit_code(argv)
+      add_line_numbers(argv)
       add_filter(argv, :inclusion, @filter_manager.inclusions)
       add_filter(argv, :exclusion, @filter_manager.exclusions)
       add_formatters(argv)
@@ -37,6 +38,12 @@ module MSpec::Core
         if @submitted_options[:failure_exit_code]
           argv << '--failure-exit-code' << @submitted_options[:failure_exit_code].to_s
         end
+      end
+
+      def add_line_numbers(argv)
+        @submitted_options[:line_numbers].each do |num|
+          argv << '--line_number' << num
+        end if @submitted_options[:line_numbers]
       end
 
       def add_formatters(argv)
