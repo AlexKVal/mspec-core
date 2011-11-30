@@ -45,14 +45,13 @@ describe MSpec::Core::DrbOptions do
       it "leaves formatters intact" do
         coo = config_options_object("--format", "d")
         coo.drb_argv
-        coo.options[:formatters].should eq([["d"]])
+        coo.options[:formatters].should include(["d"])
       end
 
       it "leaves output intact" do
-        pending
         coo = config_options_object("--format", "p", "--out", "foo.txt", "--format", "d")
         coo.drb_argv
-        coo.options[:formatters].should eq([["p","foo.txt"],["d"]])
+        coo.options[:formatters].should include(["p","foo.txt"],["d"])
       end
     end
   end
