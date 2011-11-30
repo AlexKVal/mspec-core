@@ -102,7 +102,7 @@ describe MSpec::Core::DrbOptions do
       it "includes the inclusion tags" do
         pending "untill filter_manager"
         coo = config_options_object("--tag", "wip")
-        coo.drb_argv.should eq(["--tag", "wip"])
+        coo.drb_argv.should     eq(["--tag", "wip"])
       end
     end
   end
