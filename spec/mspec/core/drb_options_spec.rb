@@ -43,7 +43,6 @@ describe MSpec::Core::DrbOptions do
       end
 
       it "leaves formatters intact" do
-        pending
         coo = config_options_object("--format", "d")
         coo.drb_argv
         coo.options[:formatters].should eq([["d"]])
