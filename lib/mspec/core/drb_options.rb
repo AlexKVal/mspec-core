@@ -19,6 +19,7 @@ module MSpec::Core
 
       add_full_descriptions(argv)
       add_failure_exit_code(argv)
+      add_formatters(argv)
 
       argv + @submitted_options[:files_or_directories_to_run]
     end
@@ -34,6 +35,12 @@ module MSpec::Core
         if @submitted_options[:failure_exit_code]
           argv << '--failure-exit-code' << @submitted_options[:failure_exit_code].to_s
         end
+      end
+
+      def add_formatters(argv)
+        @submitted_options[:formatters].each do |pare|
+          argv << '--format' << pare.first
+        end if @submitted_options[:formatters]
       end
   end
 end

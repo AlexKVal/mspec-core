@@ -39,7 +39,6 @@ describe MSpec::Core::DrbOptions do
 
     context "with formatters" do
       it "includes the formatters" do
-        pending
         config_options_object(*%w[--format d]).drb_argv.should include("--format", "d")
       end
 
