@@ -39,7 +39,8 @@ module MSpec::Core
 
       def add_formatters(argv)
         @submitted_options[:formatters].each do |pare|
-          argv << '--format' << pare.first
+          argv << '--format' << pare[0]
+          argv << '--out'    << pare[1] if pare[1]
         end if @submitted_options[:formatters]
       end
   end

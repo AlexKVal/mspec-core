@@ -54,5 +54,12 @@ describe MSpec::Core::DrbOptions do
         coo.options[:formatters].should include(["p","foo.txt"],["d"])
       end
     end
+
+    context "with --out" do
+      it "combines with formatters" do
+        coo = config_options_object("--format", "h", "--out", "report.html")
+        coo.drb_argv.should include("--format", "h", "--out", "report.html")
+      end
+    end
   end
 end
