@@ -2,14 +2,22 @@ require 'spec_helper'
 
 module MSpec::Core
   describe FilterManager do
-    %w[inclusions include exclusions exclude].each_slice(2) do |type, name|
-      it "merges #{type}" do
-        filter_manager = FilterManager.new
-        filter_manager.exclusions.clear # defaults
-        filter_manager.send name, :foo => :bar
-        filter_manager.send name, :baz => :bam
-        filter_manager.send(type).should eq(:foo => :bar, :baz => :bam)
-      end
+    it "merges inclusions" do
+      filter_manager = FilterManager.new
+      filter_manager.exclusions.clear # defaults
+      filter_manager.include :foo => :bar
+      filter_manager.include :baz => :bam
+      filter_manager.inclusions.should eq(:foo => :bar, :baz => :bam)
+    end
+
+    # %w[inclusions include exclusions exclude].each_slice(2) do |type, name|
+      # it "merges #{type}" do
+      #   filter_manager = FilterManager.new
+      #   filter_manager.exclusions.clear # defaults
+      #   filter_manager.send name, :foo => :bar
+      #   filter_manager.send name, :baz => :bam
+      #   filter_manager.send(type).should eq(:foo => :bar, :baz => :bam)
+      # end
 
       # it "overrides previous #{type} (via merge)" do
       #   filter_manager = FilterManager.new
@@ -26,7 +34,7 @@ module MSpec::Core
       #   filter_manager.send name, :weak, :foo => 2
       #   filter_manager.send(type).should eq(:foo => 1)
       # end
-    end
+    # end
 
     # it "clears the inclusion filter on include :line_numbers" do
     #   filter_manager = FilterManager.new
