@@ -143,5 +143,36 @@ describe MSpec::Core::DrbOptions do
         coo.filter_manager.exclusions.should include(:tag=>'foo')
       end
     end
+
+    context "--drb specified in ARGV" do
+      it "renders all the original arguments except --drb" do
+        config_options_object(*%w[ --drb --color --format s --example pattern --line_number 1 --profile --backtrace -I path/a -I path/b --require path/c --require path/d]).
+          drb_argv.should eq(%w[ --color --profile --backtrace --example pattern --line_number 1 --format s -I path/a -I path/b --require path/c --require path/d])
+      end
+    end
+
+    context "--drb specified in the options file" do
+      it "renders all the original arguments except --drb" do
+        File.open("./.rspec", "w") {|f| f << "--drb --color"}
+        config_options_object(*%w[ --tty --format s --example pattern --line_number 1 --profile --backtrace ]).
+          drb_argv.should eq(%w[ --color --profile --backtrace --tty --example pattern --line_number 1 --format s])
+      end
+    end
+
+    context "--drb specified in ARGV and the options file" do
+      it "renders all the original arguments except --drb" do
+        File.open("./.rspec", "w") {|f| f << "--drb --color"}
+        config_options_object(*%w[ --drb --format s --example pattern --line_number 1 --profile --backtrace]).
+          drb_argv.should eq(%w[ --color --profile --backtrace --example pattern --line_number 1 --format s])
+      end
+    end
+
+    context "--drb specified in ARGV and in as ARGV-specified --options file" do
+      it "renders all the original arguments except --drb and --options" do
+        File.open("./.rspec", "w") {|f| f << "--drb --color"}
+        config_options_object(*%w[ --drb --format s --example pattern --line_number 1 --profile --backtrace]).
+          drb_argv.should eq(%w[ --color --profile --backtrace --example pattern --line_number 1 --format s ])
+      end
+    end
   end
 end
