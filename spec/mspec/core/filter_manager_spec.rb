@@ -2,39 +2,31 @@ require 'spec_helper'
 
 module MSpec::Core
   describe FilterManager do
-    it "merges inclusions" do
-      filter_manager = FilterManager.new
-      filter_manager.exclusions.clear # defaults
-      filter_manager.include :foo => :bar
-      filter_manager.include :baz => :bam
-      filter_manager.inclusions.should eq(:foo => :bar, :baz => :bam)
+    %w[inclusions include exclusions exclude].each_slice(2) do |type, name|
+      it "merges #{type}" do
+        filter_manager = FilterManager.new
+        filter_manager.exclusions.clear # defaults
+        filter_manager.send name, :foo => :bar
+        filter_manager.send name, :baz => :bam
+        filter_manager.send(type).should eq(:foo => :bar, :baz => :bam)
+      end
+
+      it "overrides previous #{type} (via merge)" do
+        filter_manager = FilterManager.new
+        filter_manager.exclusions.clear # defaults
+        filter_manager.send name, :foo => 1
+        filter_manager.send name, :foo => 2
+        filter_manager.send(type).should eq(:foo => 2)
+      end
+      
+      it "ignores new #{type} if same key exists and priority is low" do
+        filter_manager = FilterManager.new
+        filter_manager.exclusions.clear # defaults
+        filter_manager.send name, :foo => 1
+        filter_manager.send name, :weak, :foo => 2
+        filter_manager.send(type).should eq(:foo => 1)
+      end
     end
-
-    # %w[inclusions include exclusions exclude].each_slice(2) do |type, name|
-      # it "merges #{type}" do
-      #   filter_manager = FilterManager.new
-      #   filter_manager.exclusions.clear # defaults
-      #   filter_manager.send name, :foo => :bar
-      #   filter_manager.send name, :baz => :bam
-      #   filter_manager.send(type).should eq(:foo => :bar, :baz => :bam)
-      # end
-
-      # it "overrides previous #{type} (via merge)" do
-      #   filter_manager = FilterManager.new
-      #   filter_manager.exclusions.clear # defaults
-      #   filter_manager.send name, :foo => 1
-      #   filter_manager.send name, :foo => 2
-      #   filter_manager.send(type).should eq(:foo => 2)
-      # end
-      # 
-      # it "ignores new #{type} if same key exists and priority is low" do
-      #   filter_manager = FilterManager.new
-      #   filter_manager.exclusions.clear # defaults
-      #   filter_manager.send name, :foo => 1
-      #   filter_manager.send name, :weak, :foo => 2
-      #   filter_manager.send(type).should eq(:foo => 1)
-      # end
-    # end
 
     # it "clears the inclusion filter on include :line_numbers" do
     #   filter_manager = FilterManager.new

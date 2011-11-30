@@ -19,12 +19,14 @@ module MSpec
         puts "orig: " + orig.inspect
         puts "opposite: " + opposite.inspect
         puts "updates: " + updates.inspect
-        
-        orig.merge!(updates.last).each_key {|k| opposite.delete(k)}
-        
-        # updated = updates.last.merge(orig)
-        #         opposite.each_key {|k| updated.delete(k)}
-        #         orig.replace(updated)
+
+        if updates.first == :weak
+          updated = updates.last.merge(orig)
+          opposite.each_key {|k| updated.delete(k)}
+          orig.replace(updated)
+        else
+          orig.merge!(updates.last).each_key {|k| opposite.delete(k)}
+        end
         puts "orig: " + orig.inspect
       end
     end
