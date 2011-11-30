@@ -61,5 +61,13 @@ describe MSpec::Core::DrbOptions do
         coo.drb_argv.should include("--format", "h", "--out", "report.html")
       end
     end
+
+    context "with tags" do
+      it "includes the inclusion tags" do
+        pending "untill filter_manager"
+        coo = config_options_object("--tag", "wip")
+        coo.drb_argv.should eq(["--tag", "wip"])
+      end
+    end
   end
 end

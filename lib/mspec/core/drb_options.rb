@@ -19,6 +19,8 @@ module MSpec::Core
 
       add_full_descriptions(argv)
       add_failure_exit_code(argv)
+      add_filter(argv, :inclusion, @filter_manager.inclusions)
+      add_filter(argv, :exclusion, @filter_manager.exclusions)
       add_formatters(argv)
 
       argv + @submitted_options[:files_or_directories_to_run]
@@ -42,6 +44,15 @@ module MSpec::Core
           argv << '--format' << pare[0]
           argv << '--out'    << pare[1] if pare[1]
         end if @submitted_options[:formatters]
+      end
+
+      def add_filter(argv, name, hash)
+        puts "name: " + name.inspect
+        puts "hash: " + hash.inspect
+        hash.each_key do |key|
+          argv << '--tag' << "#{'~' if name == :exclusion}#{key}:#{hash[key]}"
+          puts "argv: " + argv.inspect
+        end unless hash.empty?
       end
   end
 end
