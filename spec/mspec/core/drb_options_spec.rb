@@ -62,6 +62,18 @@ describe MSpec::Core::DrbOptions do
       end
     end
 
+    context "with line_numbers" do
+      pending
+    end
+
+    context "with libs" do
+      pending
+    end
+
+    context "with requires" do
+      pending
+    end
+
     context "with tags" do
       it "includes the inclusion tags" do
         pending "untill filter_manager"

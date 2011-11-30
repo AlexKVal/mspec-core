@@ -47,11 +47,11 @@ module MSpec::Core
       end
 
       def add_filter(argv, name, hash)
-        puts "name: " + name.inspect
-        puts "hash: " + hash.inspect
+        #puts "name: " + name.inspect
+        #puts "hash: " + hash.inspect
         hash.each_key do |key|
           argv << '--tag' << "#{'~' if name == :exclusion}#{key}:#{hash[key]}"
-          puts "argv: " + argv.inspect
+          #puts "argv: " + argv.inspect
         end unless hash.empty?
       end
   end
