@@ -23,6 +23,8 @@ module MSpec::Core
       add_filter(argv, :inclusion, @filter_manager.inclusions)
       add_filter(argv, :exclusion, @filter_manager.exclusions)
       add_formatters(argv)
+      add_libs(argv)
+      add_requires(argv)
 
       argv + @submitted_options[:files_or_directories_to_run]
     end
@@ -44,6 +46,8 @@ module MSpec::Core
         @submitted_options[:line_numbers].each do |num|
           argv << '--line_number' << num
         end if @submitted_options[:line_numbers]
+        # RSpec's code
+        # argv.push(*@submitted_options[:line_numbers].inject([]){|a,l| a << "--line_number" << l})
       end
 
       def add_formatters(argv)
@@ -60,6 +64,18 @@ module MSpec::Core
           argv << '--tag' << "#{'~' if name == :exclusion}#{key}:#{hash[key]}"
           #puts "argv: " + argv.inspect
         end unless hash.empty?
+      end
+
+      def add_libs(argv)
+        @submitted_options[:libs].each do |path|
+          argv << "-I" << path
+        end if @submitted_options[:libs]
+      end
+
+      def add_requires(argv)
+        @submitted_options[:requires].each do |path|
+          argv << "--require" << path
+        end if @submitted_options[:requires]
       end
   end
 end
