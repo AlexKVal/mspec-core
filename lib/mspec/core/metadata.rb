@@ -35,12 +35,12 @@ module MSpec::Core
 #{"*"*50}
 :#{key} is not allowed
 
-RSpec reserves some hash keys for its own internal use,
+MSpec reserves some hash keys for its own internal use,
 including :#{key}, which is used on:
 
   #{caller(0)[4]}.
 
-Here are all of RSpec's reserved hash keys:
+Here are all of MSpec's reserved hash keys:
 
   #{RESERVED_KEYS.join("\n  ")}
 #{"*"*50}
