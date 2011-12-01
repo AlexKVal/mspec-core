@@ -26,11 +26,11 @@ module MSpec
         case updates.first
         when :replace
           orig.replace(updates.last)
-        when :weak # priority
+        when :low_priority
           updated = updates.last.merge(orig)
           opposite.each_key {|k| updated.delete(k)}
           orig.replace(updated)
-        else # normal priority
+        else
           orig.merge!(updates.last).each_key {|k| opposite.delete(k)}
         end
       end

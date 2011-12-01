@@ -23,7 +23,7 @@ module MSpec::Core
         filter_manager = FilterManager.new
         filter_manager.exclusions.clear # defaults
         filter_manager.send name, :foo => 1
-        filter_manager.send name, :weak, :foo => 2
+        filter_manager.send name, :low_priority, :foo => 2
         filter_manager.send(type).should eq(:foo => 1)
       end
     end
