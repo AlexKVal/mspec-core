@@ -5,6 +5,8 @@ end
 require_mspec 'core/filter_manager'
 require_mspec 'core/deprecation'
 
+require_mspec 'core/metadata'
+
 require_mspec 'core/world'
 require_mspec 'core/configuration'
 require_mspec 'core/option_parser'
