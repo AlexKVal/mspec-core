@@ -10,12 +10,9 @@ module MSpec
       end
 
       def include(*args)
-        hash_arg = args.first.is_a?(Hash) ? args.first : args.last
-        args.unshift :replace if STANDALONE_FILTERS.any? do |name|
-          hash_arg.has_key? name
-        end
+        return if already_set_standalone_filter?
 
-        update(@inclusions, @exclusions, *args)
+        is_standalone_filter?(args.last) ? @inclusions.replace(args.last) : update(@inclusions, @exclusions, *args)
       end
 
       def exclude(*args)
@@ -34,6 +31,15 @@ module MSpec
           orig.merge!(updates.last).each_key {|k| opposite.delete(k)}
         end
       end
+
+      private
+        def is_standalone_filter?(filter)
+          STANDALONE_FILTERS.any? {|key| filter.has_key?(key)}
+        end
+
+        def already_set_standalone_filter?
+          is_standalone_filter?(@inclusions)
+        end
     end
   end
 end
