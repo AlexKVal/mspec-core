@@ -3,10 +3,9 @@ module MSpec::Core
     def initialize
       self[:example_group] = {}
     end
+
     def process(*args)
-      RESERVED_KEYS.each do |key|
-        raise ArgumentError.new(":#{key} is not allowed") if args[1].has_key? key
-      end
+      ensure_valid_keys(args.last)
 
       if args.first == 'group'
         puts "args[1][:caller]: " + args[1][:caller].inspect #remove
@@ -28,5 +27,26 @@ module MSpec::Core
         :line_number,
         :location
       ]
+
+      def ensure_valid_keys(user_metadata)
+        RESERVED_KEYS.each do |key|
+          if user_metadata.has_key? key
+            raise <<-EOM
+#{"*"*50}
+:#{key} is not allowed
+
+RSpec reserves some hash keys for its own internal use,
+including :#{key}, which is used on:
+
+  #{caller(0)[4]}.
+
+Here are all of RSpec's reserved hash keys:
+
+  #{RESERVED_KEYS.join("\n  ")}
+#{"*"*50}
+EOM
+          end
+        end
+      end
   end
 end

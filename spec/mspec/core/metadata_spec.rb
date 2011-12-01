@@ -21,15 +21,15 @@ module MSpec
         end
       end
 
-      describe "#for_example" do
-        let(:metadata)           { Metadata.new.process("group description") }
-        let(:mfe)                { metadata.for_example("example description", {:arbitrary => :options}) }
-        let(:line_number)        { __LINE__ - 1 }
-
-        it "stores the description" do
-          mfe[:description].should eq("example description")
-        end
-      end
+      # describe "#for_example" do
+      #   let(:metadata)           { Metadata.new.process("group description") }
+      #   let(:mfe)                { metadata.for_example("example description", {:arbitrary => :options}) }
+      #   let(:line_number)        { __LINE__ - 1 }
+      # 
+      #   it "stores the description" do
+      #     mfe[:description].should eq("example description")
+      #   end
+      # end
 
     end
   end
