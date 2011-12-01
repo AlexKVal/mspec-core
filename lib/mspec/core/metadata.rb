@@ -2,18 +2,24 @@ module MSpec::Core
   class Metadata < Hash
     def initialize
       self[:example_group] = {}
+      @user_metadata = {}
     end
 
     def process(*args)
-      ensure_valid_keys(args.last)
+      @user_metadata = args.last if args.last.is_a? Hash
+      @example_name = args.first if args.first.is_a? String
 
-      if args.first == 'group'
-        puts "args[1][:caller]: " + args[1][:caller].inspect #remove
-        
-        self[:example_group][:location] = args[1][:caller].first if args[1].has_key? :caller
-        
-        puts "self[:example_group][:location]: " + self[:example_group][:location].inspect #remove
-      end
+      ensure_valid_keys(@user_metadata)
+      self[:example_group][:location] = @user_metadata[:caller].first if @user_metadata.has_key? :caller
+
+      #puts "args[1][:caller]: " + args[1][:caller].inspect #remove
+
+      self
+    end
+
+    def for_example(description, user_metadata)
+      self[:description] = description
+      self
     end
 
     private
