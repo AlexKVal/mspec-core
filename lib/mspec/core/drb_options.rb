@@ -58,12 +58,11 @@ module MSpec::Core
       end
 
       def add_filter(argv, name, hash)
-        hash.each_key do |key|
-          argv << "--tag"
-          tilda = (name == :exclusion) ? '~' : ''
-          value = ":#{hash[key]}" unless hash[key].is_a?(TrueClass)
-          argv << "#{tilda}#{key}#{value}"
-        end unless hash.empty?
+        hash.each_pair do |k, v|
+          tag = (name == :exclusion) ? "~#{k}" : k.to_s
+          tag << ":#{v}" if v.is_a?(String)
+          argv << "--tag" << tag
+        end
       end
 
       def add_libs(argv)
