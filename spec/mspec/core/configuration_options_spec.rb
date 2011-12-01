@@ -1,3 +1,4 @@
+# done
 require 'spec_helper'
 require 'ostruct'
 
@@ -218,21 +219,37 @@ describe MSpec::Core::ConfigurationOptions do
   end
 
   describe "--drb, -X" do
-    # actually this is testing of DrbOptions
-    # so lets implement DrbOptions first
+    context "combined with --debug" do
+      it "turns off the debugger if --drb is specified first" do
+        config_options_object("--drb", "--debug").drb_argv.should_not include("--debug")
+        config_options_object("--drb", "-d"     ).drb_argv.should_not include("--debug")
+        config_options_object("-X",    "--debug").drb_argv.should_not include("--debug")
+        config_options_object("-X",    "-d"     ).drb_argv.should_not include("--debug")
+      end
 
-    # context "combined with --debug" do
-      # it "turns off the debugger if --drb is specified first" do
-      #   config_options_object("--drb", "--debug").drb_argv.should_not include("--debug")
-      #   config_options_object("--drb", "-d"     ).drb_argv.should_not include("--debug")
-      #   config_options_object("-X",    "--debug").drb_argv.should_not include("--debug")
-      #   config_options_object("-X",    "-d"     ).drb_argv.should_not include("--debug")
-      # end
-    # end
+      it "turns off the debugger option if --drb is specified later" do
+        config_options_object("--debug", "--drb").drb_argv.should_not include("--debug")
+        config_options_object("-d",      "--drb").drb_argv.should_not include("--debug")
+        config_options_object("--debug", "-X"   ).drb_argv.should_not include("--debug")
+        config_options_object("-d",      "-X"   ).drb_argv.should_not include("--debug")
+      end
 
-    # it "does not send --drb back to the parser after parsing options" do
-    #   config_options_object("--drb", "--color").drb_argv.should_not include("--drb")
-    # end
+      it "turns off the debugger option if --drb is specified in the options file" do
+        File.open("./.rspec", "w") {|f| f << "--drb"}
+        config_options_object("--debug").drb_argv.should_not include("--debug")
+        config_options_object("-d"     ).drb_argv.should_not include("--debug")
+      end
+
+      it "turns off the debugger option if --debug is specified in the options file" do
+        File.open("./.rspec", "w") {|f| f << "--debug"}
+        config_options_object("--drb").drb_argv.should_not include("--debug")
+        config_options_object("-X"   ).drb_argv.should_not include("--debug")
+      end
+    end
+
+    it "does not send --drb back to the parser after parsing options" do
+      config_options_object("--drb", "--color").drb_argv.should_not include("--drb")
+    end
   end
 
   describe "--no-drb" do
@@ -252,7 +269,7 @@ describe MSpec::Core::ConfigurationOptions do
   describe "files_or_directories_to_run" do
     it "parses files from '-c file.rb dir/file.rb'" do
       parse_options("-c", "file.rb", "dir/file.rb")
-        .should include(:files_or_directories_to_run => ["file.rb", "dir/file.rb"])
+      .should include(:files_or_directories_to_run => ["file.rb", "dir/file.rb"])
     end
 
     it "parses dir from 'dir'" do
@@ -261,7 +278,7 @@ describe MSpec::Core::ConfigurationOptions do
 
     it "parses dir and files from 'spec/file1_spec.rb, spec/file2_spec.rb'" do
       parse_options("dir", "spec/file1_spec.rb", "spec/file2_spec.rb")
-        .should include(:files_or_directories_to_run => ["dir", "spec/file1_spec.rb", "spec/file2_spec.rb"])
+      .should include(:files_or_directories_to_run => ["dir", "spec/file1_spec.rb", "spec/file2_spec.rb"])
     end
 
     it "provides no files or directories if spec directory does not exist" do
