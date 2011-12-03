@@ -76,7 +76,7 @@ module MSpec::Core
       end
     end
 
-    describe ":description" do #p
+    describe ":description" do
       it "just has the example description" do
         m = Metadata.new
         m.process("group")
@@ -87,7 +87,6 @@ module MSpec::Core
 
       context "with a string" do
         it "provides the submitted description" do
-          pending
           m = Metadata.new
           m.process("group")
 
@@ -97,7 +96,6 @@ module MSpec::Core
 
       context "with a non-string" do
         it "provides the submitted description" do
-          pending
           m = Metadata.new
           m.process(Object)
 
@@ -107,7 +105,6 @@ module MSpec::Core
 
       context "with a non-string and a string" do
         it "concats the args" do
-          pending
           m = Metadata.new
           m.process(Object, 'group')
 
@@ -117,7 +114,6 @@ module MSpec::Core
 
       context "with empty args" do
         it "returns empty string for [:example_group][:description]" do
-          pending
           m = Metadata.new
           m.process()
 
