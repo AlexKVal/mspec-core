@@ -21,11 +21,12 @@ describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' d
     command_line(args).run(err, out)
   end
 
-  # context "without server running" do
-  #   it "raises an error" do
-  #     expect { run_with [] }.should raise_error(DRb::DRbConnError)
-  #   end
-  # end
+  context "without server running" do #p
+    it "raises an error" do
+      pending
+      expect { run_with [] }.should raise_error(DRb::DRbConnError)
+    end
+  end
 
   describe "--drb-port" do
     def with_MSPEC_DRB_set_to(val)
@@ -70,5 +71,9 @@ describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' d
         end
       end
     end
+  end
+
+  context "with server running" do #p
+    pending
   end
 end

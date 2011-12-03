@@ -1,6 +1,22 @@
 module MSpec::Core
   class Metadata < Hash
-    def initialize
+
+    module MetadataHash
+      def [](key)
+        return super if has_key?(key)
+        # case key
+        # when "1"
+        # when "2"
+        # end
+      end
+
+      private
+        # def first_caller_from_outside_rspec
+        #   self[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
+        # end
+    end
+
+    def initialize(parent_group_metadata=nil)
       @group_description = ''
       self[:example_group] = {}
       @user_metadata = {}
@@ -19,23 +35,34 @@ module MSpec::Core
     end
 
     def for_example(description, user_metadata)
-      self[:description] = description
-      self[:full_description] = "#{@group_description} #{description}"
-      self[:execution_result] = {}
+      store(:description, description)
+      store(:full_description, "#{@group_description} #{description}")
+      store(:execution_result, {})
 
-      self[:caller] = user_metadata.has_key?(:caller) ? user_metadata[:caller] : caller
+      store(:caller, user_metadata.delete(:caller) || caller)
       first_caller_from_outside_rspec =~ /(.+?):(\d+)/
-      self[:file_path], self[:line_number] = [$1, $2.to_i]
+      store(:file_path, $1)
+      store(:line_number, $2.to_i)
 
-      self[:location] = "#{self[:file_path]}:#{self[:line_number]}"
+      store(:location, "#{self[:file_path]}:#{self[:line_number]}")
 
       # hack
-      self[:arbitrary] = user_metadata[:arbitrary] if user_metadata.has_key?(:arbitrary)
+      store(:arbitrary, user_metadata.delete(:arbitrary))
 
       self
     end
 
+    protected
+      def configure_for_example(description, user_metadata)
+        store(:description_args, [description])
+        store(:caller, user_metadata.delete(:caller) || caller)
+        update(user_metadata)
+      end
+
     private
+      def first_caller_from_outside_rspec
+        self[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
+      end
 
       RESERVED_KEYS = [
         :description,
@@ -46,10 +73,6 @@ module MSpec::Core
         :line_number,
         :location
       ]
-
-      def first_caller_from_outside_rspec
-        self[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
-      end
 
       def ensure_valid_keys(user_metadata)
         RESERVED_KEYS.each do |key|

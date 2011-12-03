@@ -82,15 +82,15 @@ module MSpec::Core
       end
     end
 
-    describe "#prune" do
+    describe "#prune" do #p
       pending
     end
 
-    describe "#inclusions#description" do
+    describe "#inclusions#description" do #p
       pending
     end
 
-    describe "#exclusions#description" do
+    describe "#exclusions#description" do #p
       pending
     end
 
