@@ -70,9 +70,70 @@ module MSpec::Core
       end
     end
 
-    [:described_class, :describes].each do |key| #p
-      describe key do
-        pending
+    describe ":described_class" do
+      context "with a String" do
+        it "returns nil" do
+          m = Metadata.new
+          m.process('group')
+
+          m[:example_group][:described_class].should be_nil
+        end
+      end
+
+      context "with a Symbol" do
+        it "returns nil" do
+          m = Metadata.new
+          m.process(:group)
+
+          m[:example_group][:described_class].should be_nil
+        end
+      end
+
+      context "with a class" do
+        it "returns the class" do
+          m = Metadata.new
+          m.process(String)
+
+          m[:example_group][:described_class].should be(String)
+        end
+      end
+
+      context "in a nested group" do
+        it "returns the parent group's described class" do
+          sm = Metadata.new
+          sm.process(String)
+
+          m = Metadata.new(sm)
+          m.process(Array)
+
+          m[:example_group][:described_class].should be(String)
+        end
+
+        it "returns own described class if parent doesn't have one" do
+          sm = Metadata.new
+          sm.process("foo")
+
+          m = Metadata.new(sm)
+          m.process(Array)
+
+          m[:example_group][:described_class].should be(Array)
+        end
+
+        it "can override a parent group's described class" do
+          parent = Metadata.new
+          parent.process(String)
+
+          child = Metadata.new(parent)
+          child.process(Fixnum)
+          child[:example_group][:described_class] = Hash
+
+          grandchild = Metadata.new(child)
+          grandchild.process(Array)
+
+          grandchild[:example_group][:described_class].should be(Hash)
+          child[:example_group][:described_class].should be(Hash)
+          parent[:example_group][:described_class].should be(String)
+        end
       end
     end
 

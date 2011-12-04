@@ -13,13 +13,10 @@ module MSpec::Core
           store(:file_path, $1)
           store(:line_number, $2.to_i)
           super
-          when :execution_result
-            store(:execution_result, {})
-          # when :describes, :described_class
-          #   klass = described_class_for(self)
-          #   store(:described_class, klass)
-          #   # TODO (2011-11-07 DC) deprecate :describes as a key
-          #   store(:describes, klass)
+        when :execution_result
+          store(:execution_result, {})
+        when :described_class
+          store(:described_class, described_class)
         when :full_description
           store(:full_description, full_description)
         when :description
@@ -35,9 +32,9 @@ module MSpec::Core
           self[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
         end
 
-        # def described_class
-        #   self[:example_group][:described_class]
-        # end
+        def described_class
+          self[:example_group][:described_class]
+        end
 
         def full_description
           build_description_from(self[:example_group][:full_description], *self[:description_args])
@@ -61,6 +58,19 @@ module MSpec::Core
 
         def full_description
           build_description_from(*ancestors.reverse.map {|a| a[:description_args]}.flatten)
+        end
+
+        def described_class
+          ancestors.each do |g|
+            return g[:described_class] if g.has_key?(:described_class)
+          end
+
+          ancestors.reverse.each do |g|
+            candidate = g[:description_args].first
+            return candidate unless String === candidate || Symbol === candidate
+          end
+
+          nil
         end
 
         def ancestors
