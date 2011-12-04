@@ -126,15 +126,38 @@ module MSpec::Core
       pending
     end
 
-    describe ":file_path" do #p
-      pending
+    describe ":file_path" do
+      it "finds the first non-rspec lib file in the caller array" do
+        m = Metadata.new
+        m.process(:caller => [
+                    "./lib/rspec/core/foo.rb",
+                    "#{__FILE__}:#{__LINE__}"
+        ])
+        m[:example_group][:file_path].should eq(__FILE__)
+      end
     end
 
-    describe ":line_number" do #p
-      pending
+    describe ":line_number" do
+      it "finds the line number with the first non-rspec lib file in the backtrace" do
+        m = Metadata.new
+        m.process({})
+        m[:example_group][:line_number].should eq(__LINE__ - 1)
+      end
+
+      it "finds the line number with the first spec file with drive letter" do
+        m = Metadata.new
+        m.process(:caller => [ "C:/path/to/file_spec.rb:#{__LINE__}" ])
+        m[:example_group][:line_number].should eq(__LINE__ - 1)
+      end
+
+      it "uses the number after the first : for ruby 1.9" do
+        m = Metadata.new
+        m.process(:caller => [ "#{__FILE__}:#{__LINE__}:999" ])
+        m[:example_group][:line_number].should eq(__LINE__ - 1)
+      end
     end
 
-    describe "child example group" do #p
+    describe "child example group" do
       it "nests the parent's example group metadata" do
         parent = Metadata.new
         parent.process(Object, 'parent')
