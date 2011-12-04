@@ -135,7 +135,15 @@ module MSpec::Core
     end
 
     describe "child example group" do #p
-      pending
+      it "nests the parent's example group metadata" do
+        parent = Metadata.new
+        parent.process(Object, 'parent')
+
+        child = Metadata.new(parent)
+        child.process()
+
+        child[:example_group][:example_group].should eq(parent[:example_group])
+      end
     end
   end
 end

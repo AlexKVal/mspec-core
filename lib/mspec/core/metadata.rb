@@ -1,16 +1,86 @@
 module MSpec::Core
   class Metadata < Hash
-    attr_writer :for_group
-    def for_group?
-      @for_group
+
+    module MetadataHash
+
+      def [](key)
+        return super if has_key?(key)
+        case key
+        when :location
+          store(:location, "#{self[:file_path]}:#{self[:line_number]}")
+        when :file_path, :line_number
+          first_caller_from_outside_rspec =~ /(.+?):(\d+)/
+          store(:file_path, $1)
+          store(:line_number, $2.to_i)
+          super
+          when :execution_result
+            store(:execution_result, {})
+          # when :describes, :described_class
+          #   klass = described_class_for(self)
+          #   store(:described_class, klass)
+          #   # TODO (2011-11-07 DC) deprecate :describes as a key
+          #   store(:describes, klass)
+        when :full_description
+          store(:full_description, full_description)
+        when :description
+          store(:description, build_description_from(*self[:description_args]))
+        else
+          super
+        end
+      end
+
+      private
+
+        def first_caller_from_outside_rspec
+          self[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
+        end
+
+        # def described_class
+        #   self[:example_group][:described_class]
+        # end
+
+        def full_description
+          build_description_from(self[:example_group][:full_description], *self[:description_args])
+        end
+
+        def build_description_from(*parts)
+          parts.map {|p| p.to_s}.inject do |desc, p|
+            p =~ /^(#|::|\.)/ ? "#{desc}#{p}" : "#{desc} #{p}"
+          end || ""
+        end
+    end
+
+    module ExampleMetadataHash
+      include MetadataHash
+    end
+
+    module GroupMetadataHash
+      include MetadataHash
+
+      private
+
+        def full_description
+          build_description_from(*ancestors.reverse.map {|a| a[:description_args]}.flatten)
+        end
+
+        def ancestors
+          @ancestors ||= begin
+            groups = [group = self]
+            while group.has_key?(:example_group)
+              groups << group[:example_group]
+              group = group[:example_group]
+            end
+            groups
+          end
+        end
     end
 
     def initialize(parent_group_metadata=nil)
       if parent_group_metadata
         update(parent_group_metadata)
-        store(:example_group, {:example_group => parent_group_metadata[:example_group]})
+        store(:example_group, {:example_group => parent_group_metadata[:example_group]}.extend(GroupMetadataHash))
       else
-        store(:example_group, {})
+        store(:example_group, {}.extend(GroupMetadataHash))
       end
 
       yield self if block_given?
@@ -20,80 +90,22 @@ module MSpec::Core
       user_metadata = args.last.is_a?(Hash) ? args.pop : {}
       ensure_valid_keys(user_metadata)
 
-      self[:example_group] = Metadata.new
-      self[:example_group][:description_args] = args
-      self[:example_group][:caller] = user_metadata.delete(:caller) || caller
+      self[:example_group].store(:description_args, args)
+      self[:example_group].store(:caller, user_metadata.delete(:caller) || caller)
 
-      for_group = true
-
-      update(user_metadata) # ExampleGroup additional hash user metadata
+      update(user_metadata)
     end
 
     def for_example(description, user_metadata)
-      store(:description_args, [description])
-      store(:caller, user_metadata.delete(:caller) || caller)
-
-
-      store(:execution_result, {})
-
-      for_group = false
-
-      update(user_metadata)
-      dup
-    end
-
-    def [](key)
-      return super if has_key?(key)
-
-      case key
-      when :location
-        store(:location, "#{self[:file_path]}:#{self[:line_number]}")
-      when :description
-        store(:description, build_description_from(*self[:description_args]))
-      when :full_description
-        store(:full_description, full_description_for(self))
-      when :file_path, :line_number
-        first_caller_from_outside_rspec =~ /(.+?):(\d+)/
-        store(:file_path, $1)
-        store(:line_number, $2.to_i)
-        super
-      else
-        super
-      end
+      example_metadata = dup.extend(ExampleMetadataHash)
+      example_metadata[:description_args] = [description]
+      example_metadata[:caller] = user_metadata.delete(:caller) || caller
+      example_metadata.update(user_metadata)
     end
 
     private
-      def first_caller_from_outside_rspec
-        self[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
-      end
-
-      def build_description_from(*parts)
-        parts.map {|p| p.to_s}.inject do |desc, p|
-          p =~ /^(#|::|\.)/ ? "#{desc}#{p}".strip : "#{desc} #{p}".strip
-        end || ""
-      end
-
-      def full_description_for(metadata)
-        if metadata.for_group?
-          build_description_from(*ancestors.reverse.map {|a| a[:description_args]}.flatten)
-        else
-          build_description_from(self[:example_group][:full_description], *self[:description_args])
-        end
-      end
-
-      def ancestors
-        @ancestors ||= begin
-                         groups = [group = self]
-                         while group.has_key?(:example_group)
-                           groups << group[:example_group]
-                           group = group[:example_group]
-                         end
-                         groups
-                       end
-      end
 
       RESERVED_KEYS = [
-        :description_args,
         :description,
         :example_group,
         :execution_result,
@@ -105,19 +117,19 @@ module MSpec::Core
 
       def ensure_valid_keys(user_metadata)
         RESERVED_KEYS.each do |key|
-          if user_metadata.has_key? key
+          if user_metadata.has_key?(key)
             raise "
 #{"*"*50}
 :#{key} is not allowed
 
-MSpec reserves some hash keys for its own internal use,
+RSpec reserves some hash keys for its own internal use,
 including :#{key}, which is used on:
 
-#{caller(0)[4]}.
+  #{caller(0)[4]}.
 
-Here are all of MSpec's reserved hash keys:
+Here are all of RSpec's reserved hash keys:
 
-#{RESERVED_KEYS.join("\n  ")}
+  #{RESERVED_KEYS.join("\n  ")}
 #{"*"*50}"
           end
         end
