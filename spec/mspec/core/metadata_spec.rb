@@ -20,8 +20,8 @@ module MSpec::Core
       end
     end
 
-    describe "#filter_applies?" do #p
-      pending
+    describe "#filter_applies?" do #p untill World
+      it "needs to implement the World first."
     end
 
     describe "#for_example" do

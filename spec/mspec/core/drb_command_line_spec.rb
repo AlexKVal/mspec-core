@@ -22,8 +22,7 @@ describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' d
   end
 
   context "without server running" do #p
-    it "raises an error" do
-      pending
+    xit "raises an error" do
       expect { run_with [] }.should raise_error(DRb::DRbConnError)
     end
   end
@@ -74,6 +73,6 @@ describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' d
   end
 
   context "with server running" do #p
-    pending
+    it "needs DRB Server"
   end
 end

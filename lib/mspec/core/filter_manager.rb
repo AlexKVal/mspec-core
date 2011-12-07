@@ -9,6 +9,9 @@ module MSpec
         @inclusions, @exclusions = {}, {}
       end
 
+      def prune(examples)
+        examples.select {|e| !exclude?(e) && include?(e)}
+      end
 
       def include(*args)
         unless_standalone(*args) { merge(@inclusions, @exclusions, *args) }
@@ -16,6 +19,10 @@ module MSpec
 
       def include!(*args)
         unless_standalone(*args) { replace(@inclusions, @exclusions, *args) }
+      end
+
+      def include?(example)
+        @inclusions.empty? ? true : example.any_apply?(@inclusions)
       end
 
       def include_with_low_priority(*args)
@@ -28,6 +35,10 @@ module MSpec
 
       def exclude!(*args)
         replace(@exclusions, @inclusions, *args)
+      end
+
+      def exclude?(example)
+        @exclusions.empty? ? false : example.any_apply?(@exclusions)
       end
 
       def exclude_with_low_priority(*args)
