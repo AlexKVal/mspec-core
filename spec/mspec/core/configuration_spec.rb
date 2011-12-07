@@ -6,7 +6,7 @@ require 'tmpdir'
 
 module MSpec::Core
 
-  describe Configuration do
+  describe Configuration do #p
 
     let(:config) { Configuration.new }
 
@@ -34,7 +34,7 @@ module MSpec::Core
     end
 
     describe "#treat_symbols_as_metadata_keys_with_true_values?" do
-      xit 'defaults to false' do
+      it 'defaults to false' do
         config.treat_symbols_as_metadata_keys_with_true_values?.should be_false
       end
 
