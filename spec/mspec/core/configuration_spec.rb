@@ -12,7 +12,7 @@ module MSpec::Core
 
     describe "#load_spec_files" do
 
-      xit "loads files using load" do
+      it "loads files using load" do
         config.files_to_run = ["foo.bar", "blah_spec.rb"]
         config.should_receive(:load).twice
         config.load_spec_files
@@ -25,7 +25,7 @@ module MSpec::Core
           ::Spec::VERSION::const_set(:MAJOR, 1)
         end
         after  { Object.__send__(:remove_const, :Spec) }
-        xit "raises with a helpful message" do
+        it "raises with a helpful message" do
           expect {
             config.load_spec_files
           }.to raise_error(/rspec-1 has been loaded/)
