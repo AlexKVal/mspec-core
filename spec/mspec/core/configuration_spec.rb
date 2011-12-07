@@ -38,21 +38,21 @@ module MSpec::Core
         config.treat_symbols_as_metadata_keys_with_true_values?.should be_false
       end
 
-      xit 'can be set to true' do
+      it 'can be set to true' do
         config.treat_symbols_as_metadata_keys_with_true_values = true
         config.treat_symbols_as_metadata_keys_with_true_values?.should be_true
       end
     end
 
     describe "#mock_framework" do
-      xit "defaults to :mspec" do
+      it "defaults to :mspec" do
         config.should_receive(:require).with('mspec/core/mocking/with_mspec')
         config.mock_framework
       end
     end
 
     describe "#mock_framework="do
-      xit "delegates to mock_with" do
+      it "delegates to mock_with" do
         config.should_receive(:mock_with).with(:mspec)
         config.mock_framework = :mspec
       end
@@ -61,7 +61,7 @@ module MSpec::Core
     describe "#mock_with" do
       [:mspec, :mocha, :rr, :flexmock].each do |framework|
         context "with #{framework}" do
-          xit "requires the adapter for #{framework.inspect}" do
+          it "requires the adapter for #{framework.inspect}" do
             config.should_receive(:require).with("mspec/core/mocking/with_#{framework}")
             config.mock_with framework
           end
@@ -69,7 +69,7 @@ module MSpec::Core
       end
 
       context "with a module" do
-        xit "sets the mock_framework_adapter to that module" do
+        it "sets the mock_framework_adapter to that module" do
           config.stub(:require)
           mod = Module.new
           config.mock_with mod
@@ -77,7 +77,7 @@ module MSpec::Core
         end
       end
 
-      xit "uses the null adapter when set to any unknown key" do
+      it "uses the null adapter when set to any unknown key" do
         config.should_receive(:require).with('mspec/core/mocking/with_absolutely_nothing')
         config.mock_with :crazy_new_mocking_framework_ive_not_yet_heard_of
       end

@@ -72,7 +72,7 @@ Called from #{caller(0)[5]}"
     def initialize
       #@expectation_frameworks = []
       #@include_or_extend_modules = []
-      #@mock_framework = nil
+      @mock_framework = nil
       @files_to_run = []
       #@formatters = []
       #@color = false
@@ -88,6 +88,39 @@ Called from #{caller(0)[5]}"
     def load_spec_files
       files_to_run.map {|f| load File.expand_path(f) }
       raise_if_rspec_1_is_loaded
+    end
+
+    # Returns the configured mock framework adapter module
+    def mock_framework
+      mock_with :mspec unless @mock_framework
+      @mock_framework
+    end
+
+    def mock_framework=(framework)
+      mock_with framework
+    end
+
+    def mock_with(framework)
+      framework_module = case framework
+      when Module
+        framework
+      when String, Symbol
+        require "mspec/core/mocking/with_" << case framework.to_s
+        when /mspec/i
+          'mspec'
+        when /mocha/i
+          'mocha'
+        when /rr/i
+          'rr'
+        when /flexmock/i
+          'flexmock'
+        else
+          'absolutely_nothing'
+        end
+        #MSpec::Core::MockFrameworkAdapter
+      end
+
+      @mock_framework = framework_module
     end
 
     def inclusion_filter
