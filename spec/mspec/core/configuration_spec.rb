@@ -293,18 +293,18 @@ module MSpec
           end
         end
 
-        xit "sets the filter with a hash" do
+        it "sets the filter with a hash" do
           config.filter_run_including :foo => true
           config.inclusion_filter[:foo].should be(true)
         end
 
-        xit "sets the filter with a symbol" do
-          RSpec.configuration.stub(:treat_symbols_as_metadata_keys_with_true_values? => true)
+        it "sets the filter with a symbol" do
+          MSpec.configuration.stub(:treat_symbols_as_metadata_keys_with_true_values? => true)
           config.filter_run_including :foo
           config.inclusion_filter[:foo].should be(true)
         end
 
-        xit "merges with existing filters" do
+        it "merges with existing filters" do
           config.filter_run_including :foo => true
           config.filter_run_including :bar => false
 
