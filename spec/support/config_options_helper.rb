@@ -1,7 +1,7 @@
 require 'fakefs/safe'
 
 module ConfigOptionsHelper
-  extend RSpec::SharedContext
+  extend RSpec::SharedContext # RSpec - is not error ! It's part from RSpec
 
   before do
     FakeFS.activate!

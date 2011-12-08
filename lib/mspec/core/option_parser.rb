@@ -64,7 +64,7 @@ module MSpec::Core
           options[:drb_port] = port
         end
 
-        parser.on("--tty", "Used internally by rspec when sending commands to other processes") do |o|
+        parser.on("--tty", "Used internally by mspec when sending commands to other processes") do |o|
           options[:tty] = o
         end
 
@@ -141,7 +141,7 @@ FILTERING
           options[filter_type][name.to_sym] = val.nil? ? true : eval(val) rescue val
         end
 
-        parser.on('--default_path PATH', 'Set the default path where RSpec looks for examples.',
+        parser.on('--default_path PATH', 'Set the default path where MSpec looks for examples.',
                                          'Can be a path to a file or a directory') do |path|
           options[:default_path] = path
         end

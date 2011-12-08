@@ -90,15 +90,15 @@ module MSpec::Core
 
       def global_options_file
         begin
-          File.join(File.expand_path("~"), ".rspec")
+          File.join(File.expand_path("~"), ".mspec")
         rescue ArgumentError
-          warn "Unable to find ~/.rspec because the HOME environment variable is not set"
+          warn "Unable to find ~/.mspec because the HOME environment variable is not set"
           nil
         end
       end
 
       def local_options_file
-        ".rspec"
+        ".mspec"
       end
 
       def custom_options_file

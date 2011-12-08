@@ -9,7 +9,7 @@ module MSpec::Core
         when :location
           store(:location, "#{self[:file_path]}:#{self[:line_number]}")
         when :file_path, :line_number
-          first_caller_from_outside_rspec =~ /(.+?):(\d+)/
+          first_caller_from_outside_mspec =~ /(.+?):(\d+)/
           store(:file_path, $1)
           store(:line_number, $2.to_i)
           super
@@ -28,8 +28,8 @@ module MSpec::Core
 
       private
 
-        def first_caller_from_outside_rspec
-          self[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
+        def first_caller_from_outside_mspec
+          self[:caller].detect {|l| l !~ /\/lib\/mspec\/core/}
         end
 
         def described_class
@@ -132,12 +132,12 @@ module MSpec::Core
 #{"*"*50}
 :#{key} is not allowed
 
-RSpec reserves some hash keys for its own internal use,
+MSpec reserves some hash keys for its own internal use,
 including :#{key}, which is used on:
 
   #{caller(0)[4]}.
 
-Here are all of RSpec's reserved hash keys:
+Here are all of MSpec's reserved hash keys:
 
   #{RESERVED_KEYS.join("\n  ")}
 #{"*"*50}"

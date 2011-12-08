@@ -45,6 +45,7 @@ Called from #{caller(0)[5]}"
     add_setting :failure_exit_code
     add_setting :tty
     add_setting :files_to_run
+    add_setting :expecting_with_mspec
 
     # Load files matching this pattern (default: `'**/*_spec.rb'`)
     add_setting :pattern, :alias_with => :filename_pattern
@@ -70,7 +71,7 @@ Called from #{caller(0)[5]}"
 
 
     def initialize
-      #@expectation_frameworks = []
+      @expectation_frameworks = []
       #@include_or_extend_modules = []
       @mock_framework = nil
       @files_to_run = []
@@ -105,7 +106,7 @@ Called from #{caller(0)[5]}"
       when Module
         framework
       when String, Symbol
-        require "mspec/core/mocking/with_" << case framework.to_s
+        require 'mspec/core/mocking/with_' << case framework.to_s
         when /mspec/i
           'mspec'
         when /mocha/i
@@ -117,10 +118,50 @@ Called from #{caller(0)[5]}"
         else
           'absolutely_nothing'
         end
-        #MSpec::Core::MockFrameworkAdapter
+        MSpec::Core::MockFrameworkAdapter
+      end
+
+      new_name, old_name = [framework_module, @mock_framework].map do |mod|
+        mod.respond_to?(:framework_name) ?  mod.framework_name : :unnamed
+      end
+
+      unless new_name == old_name
+        assert_no_example_groups_defined(:mock_framework)
       end
 
       @mock_framework = framework_module
+    end
+
+    def expectation_frameworks
+      expect_with :mspec if @expectation_frameworks.empty?
+      @expectation_frameworks
+    end
+
+    def expectation_framework=(framework)
+      expect_with(framework)
+    end
+
+    def expect_with(*frameworks)
+      modules = frameworks.map do |framework|
+        case framework
+        when :mspec
+          require 'mspec/expectations'
+          self.expecting_with_mspec = true
+          ::MSpec::Matchers
+        when :stdlib
+          require 'test/unit/assertions'
+          ::Test::Unit::Assertions
+        else
+          raise ArgumentError, "#{framework.inspect} is not supported"
+        end
+      end
+
+      if (modules - @expectation_frameworks).any?
+        assert_no_example_groups_defined(:expect_with)
+      end
+
+      @expectation_frameworks.clear
+      @expectation_frameworks.push(*modules)
     end
 
     def inclusion_filter
@@ -153,7 +194,14 @@ Called from #{caller(0)[5]}"
         @preferred_options.has_key?(key) ? @preferred_options[key] : default
       end
 
-      # def assert_no_example_groups_defined(config_option)
+      def assert_no_example_groups_defined(config_option)
+        if MSpec.world.example_groups.any?
+          raise MustBeConfiguredBeforeExampleGroupsError.new(
+            "MSpec's #{config_option} configuration option must be configured before " +
+            "any example groups are defined, but you have already defined a group."
+          )
+        end
+      end
 
       def raise_if_rspec_1_is_loaded
         if defined?(Spec) && defined?(Spec::VERSION::MAJOR) && Spec::VERSION::MAJOR == 1
@@ -179,7 +227,7 @@ Called from #{caller(0)[5]}"
       end
 
       # def path_for(const_ref)
-      # def underscore_with_fix_for_non_standard_rspec_naming(string)
+      # def underscore_with_fix_for_non_standard_mspec_naming(string)
       # # activesupport/lib/active_support/inflector/methods.rb, line 48
       # def underscore(camel_cased_word)
       # def file_at(path)

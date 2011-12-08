@@ -154,7 +154,7 @@ describe MSpec::Core::DrbOptions do
 
     context "--drb specified in the options file" do
       it "renders all the original arguments except --drb" do
-        File.open("./.rspec", "w") {|f| f << "--drb --color"}
+        File.open("./.mspec", "w") {|f| f << "--drb --color"}
         config_options_object(*%w[ --tty --format s --example pattern --line_number 1 --profile --backtrace ]).
           drb_argv.should eq(%w[ --color --profile --backtrace --tty --example pattern --line_number 1 --format s])
       end
@@ -162,7 +162,7 @@ describe MSpec::Core::DrbOptions do
 
     context "--drb specified in ARGV and the options file" do
       it "renders all the original arguments except --drb" do
-        File.open("./.rspec", "w") {|f| f << "--drb --color"}
+        File.open("./.mspec", "w") {|f| f << "--drb --color"}
         config_options_object(*%w[ --drb --format s --example pattern --line_number 1 --profile --backtrace]).
           drb_argv.should eq(%w[ --color --profile --backtrace --example pattern --line_number 1 --format s])
       end
@@ -170,7 +170,7 @@ describe MSpec::Core::DrbOptions do
 
     context "--drb specified in ARGV and in as ARGV-specified --options file" do
       it "renders all the original arguments except --drb and --options" do
-        File.open("./.rspec", "w") {|f| f << "--drb --color"}
+        File.open("./.mspec", "w") {|f| f << "--drb --color"}
         config_options_object(*%w[ --drb --format s --example pattern --line_number 1 --profile --backtrace]).
           drb_argv.should eq(%w[ --color --profile --backtrace --example pattern --line_number 1 --format s ])
       end

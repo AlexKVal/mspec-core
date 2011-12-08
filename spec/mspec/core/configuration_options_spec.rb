@@ -235,13 +235,13 @@ describe MSpec::Core::ConfigurationOptions do
       end
 
       it "turns off the debugger option if --drb is specified in the options file" do
-        File.open("./.rspec", "w") {|f| f << "--drb"}
+        File.open("./.mspec", "w") {|f| f << "--drb"}
         config_options_object("--debug").drb_argv.should_not include("--debug")
         config_options_object("-d"     ).drb_argv.should_not include("--debug")
       end
 
       it "turns off the debugger option if --debug is specified in the options file" do
-        File.open("./.rspec", "w") {|f| f << "--debug"}
+        File.open("./.mspec", "w") {|f| f << "--debug"}
         config_options_object("--drb").drb_argv.should_not include("--debug")
         config_options_object("-X"   ).drb_argv.should_not include("--debug")
       end
@@ -268,8 +268,8 @@ describe MSpec::Core::ConfigurationOptions do
 
   describe "files_or_directories_to_run" do
     it "parses files from '-c file.rb dir/file.rb'" do
-      parse_options("-c", "file.rb", "dir/file.rb")
-      .should include(:files_or_directories_to_run => ["file.rb", "dir/file.rb"])
+      parse_options("-c", "file.rb", "dir/file.rb").
+        should include(:files_or_directories_to_run => ["file.rb", "dir/file.rb"])
     end
 
     it "parses dir from 'dir'" do
@@ -277,8 +277,8 @@ describe MSpec::Core::ConfigurationOptions do
     end
 
     it "parses dir and files from 'spec/file1_spec.rb, spec/file2_spec.rb'" do
-      parse_options("dir", "spec/file1_spec.rb", "spec/file2_spec.rb")
-      .should include(:files_or_directories_to_run => ["dir", "spec/file1_spec.rb", "spec/file2_spec.rb"])
+      parse_options("dir", "spec/file1_spec.rb", "spec/file2_spec.rb").
+        should include(:files_or_directories_to_run => ["dir", "spec/file1_spec.rb", "spec/file2_spec.rb"])
     end
 
     it "provides no files or directories if spec directory does not exist" do
@@ -297,14 +297,14 @@ describe MSpec::Core::ConfigurationOptions do
     end
   end
 
-  describe "sources: ~/.rspec, ./.rspec, custom, CLI, and SPEC_OPTS" do
+  describe "sources: ~/.mspec, ./.mspec, custom, CLI, and SPEC_OPTS" do
     before(:each) do
       FileUtils.mkpath(File.expand_path("~"))
     end
 
     it "merges global, local, SPEC_OPTS, and CLI" do
-      File.open("./.rspec", "w") {|f| f << "--line 37"}
-      File.open("~/.rspec", "w") {|f| f << "--color"}
+      File.open("./.mspec", "w") {|f| f << "--line 37"}
+      File.open("~/.mspec", "w") {|f| f << "--color"}
       ENV["SPEC_OPTS"] = "--debug"
       options = parse_options("--drb")
       options[:color].should be_true
@@ -319,21 +319,21 @@ describe MSpec::Core::ConfigurationOptions do
     end
 
     it "prefers CLI over file options" do
-      File.open("./.rspec", "w") {|f| f << "--format local"}
-      File.open("~/.rspec", "w") {|f| f << "--format global"}
+      File.open("./.mspec", "w") {|f| f << "--format local"}
+      File.open("~/.mspec", "w") {|f| f << "--format global"}
       parse_options("--format", "cli")[:formatters].should eq([['cli']])
     end
 
     it "prefers local file options over global" do
-      File.open("./.rspec", "w") {|f| f << "--format local"}
-      File.open("~/.rspec", "w") {|f| f << "--format global"}
+      File.open("./.mspec", "w") {|f| f << "--format local"}
+      File.open("~/.mspec", "w") {|f| f << "--format global"}
       parse_options[:formatters].should eq([['local']])
     end
 
     context "with custom options file" do
       it "ignores local and global options files" do
-        File.open("./.rspec", "w") {|f| f << "--format local"}
-        File.open("~/.rspec", "w") {|f| f << "--format global"}
+        File.open("./.mspec", "w") {|f| f << "--format local"}
+        File.open("~/.mspec", "w") {|f| f << "--format global"}
         File.open("./custom.opts", "w") {|f| f << "--color"}
         options = parse_options("-O", "./custom.opts")
         options[:format].should be_nil

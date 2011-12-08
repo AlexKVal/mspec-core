@@ -243,10 +243,10 @@ module MSpec::Core
     end
 
     describe ":file_path" do
-      it "finds the first non-rspec lib file in the caller array" do
+      it "finds the first non-mspec lib file in the caller array" do
         m = Metadata.new
         m.process(:caller => [
-                    "./lib/rspec/core/foo.rb",
+                    "./lib/mspec/core/foo.rb",
                     "#{__FILE__}:#{__LINE__}"
         ])
         m[:example_group][:file_path].should eq(__FILE__)
@@ -254,7 +254,7 @@ module MSpec::Core
     end
 
     describe ":line_number" do
-      it "finds the line number with the first non-rspec lib file in the backtrace" do
+      it "finds the line number with the first non-mspec lib file in the backtrace" do
         m = Metadata.new
         m.process({})
         m[:example_group][:line_number].should eq(__LINE__ - 1)
