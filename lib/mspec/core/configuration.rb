@@ -77,10 +77,10 @@ Called from #{caller(0)[5]}"
       @files_to_run = []
       #@formatters = []
       #@color = false
-      #@pattern = '**/*_spec.rb'
+      @pattern = '**/*_spec.rb'
       #@failure_exit_code = 1
       #@backtrace_clean_patterns = DEFAULT_BACKTRACE_PATTERNS.dup
-      #@default_path = 'spec'
+      @default_path = 'spec'
       #@filter_manager = FilterManager.new
       @preferred_options = {}
       #@seed = srand % 0xFFFF
@@ -180,15 +180,37 @@ Called from #{caller(0)[5]}"
     end
 
     def files_or_directories_to_run=(*files)
-      #
+      files = files.flatten
+      files << default_path if command == 'mspec' && default_path && files.empty?
+      self.files_to_run = get_files_to_run(files)
     end
 
     private
 
-      # def get_files_to_run(paths)
-      # def gather_directories(path, patterns)
-      # def extract_location(path)
-      # def command
+      def get_files_to_run(paths)
+        patterns = pattern.split(",")
+        paths.map do |path|
+          File.directory?(path) ? gather_directories(path, patterns) : extract_location(path)
+        end.flatten
+      end
+
+      def gather_directories(path, patterns)
+        patterns.map do |pattern|
+          pattern =~ /^#{path}/ ? Dir[pattern.strip] : Dir["#{path}/{#{pattern.strip}}"]
+        end
+      end
+
+      def extract_location(path)
+        if path =~ /^(.*?)((?:\:\d+)+)$/
+          path, lines = $1, $2[1..-1].split(":").map{|n| n.to_i}
+          filter_manager.add_location path, lines
+        end
+        path
+      end
+
+      def command
+        $0.split(File::SEPARATOR).last
+      end
 
       def value_for(key, default=nil)
         @preferred_options.has_key?(key) ? @preferred_options[key] : default

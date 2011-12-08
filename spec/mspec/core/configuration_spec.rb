@@ -207,6 +207,86 @@ module MSpec
         end
       end
 
+      describe "#files_to_run" do #p
+        it "loads files not following pattern if named explicitly" do
+          config.files_or_directories_to_run = "spec/mspec/core/resources/a_bar.rb"
+          config.files_to_run.should       eq(["spec/mspec/core/resources/a_bar.rb"])
+        end
+
+        it "prevents repitition of dir when start of the pattern" do
+          config.pattern = "spec/**/a_spec.rb"
+          config.files_or_directories_to_run = "spec"
+          config.files_to_run.should eq(["spec/mspec/core/resources/a_spec.rb"])
+        end
+
+        it "does not prevent repitition of dir when later of the pattern" do
+          config.pattern = "mspec/**/a_spec.rb"
+          config.files_or_directories_to_run = "spec"
+          config.files_to_run.should eq(["spec/mspec/core/resources/a_spec.rb"])
+        end
+
+        context "with <path>:<line_number>" do #p
+          xit "overrides inclusion filters set on config" do
+            config.filter_run_including :foo => :bar
+            config.files_or_directories_to_run = "path/to/file.rb:37"
+            config.inclusion_filter.size.should eq(1)
+            config.inclusion_filter[:locations].keys.first.should match(/path\/to\/file\.rb$/)
+            config.inclusion_filter[:locations].values.first.should eq([37])
+          end
+
+          xit "overrides inclusion filters set before config" do
+            config.force(:inclusion_filter => {:foo => :bar})
+            config.files_or_directories_to_run = "path/to/file.rb:37"
+            config.inclusion_filter.size.should eq(1)
+            config.inclusion_filter[:locations].keys.first.should match(/path\/to\/file\.rb$/)
+            config.inclusion_filter[:locations].values.first.should eq([37])
+          end
+
+          xit "clears exclusion filters set on config" do
+            config.exclusion_filter = { :foo => :bar }
+            config.files_or_directories_to_run = "path/to/file.rb:37"
+            config.exclusion_filter.should be_empty,
+              "expected exclusion filter to be empty:\n#{config.exclusion_filter}"
+          end
+
+          xit "clears exclusion filters set before config" do
+            config.force(:exclusion_filter => { :foo => :bar })
+            config.files_or_directories_to_run = "path/to/file.rb:37"
+            config.exclusion_filter.should be_empty,
+              "expected exclusion filter to be empty:\n#{config.exclusion_filter}"
+          end
+        end
+
+        context "with default pattern" do
+          xit "loads files named _spec.rb" do
+            config.files_or_directories_to_run = "spec/rspec/core/resources"
+            config.files_to_run.should eq([      "spec/rspec/core/resources/a_spec.rb"])
+          end
+
+          xit "loads files in Windows" do
+            file = "C:\\path\\to\\project\\spec\\sub\\foo_spec.rb"
+            config.files_or_directories_to_run = file
+            config.files_to_run.should eq([file])
+          end
+        end
+
+        context "with default default_path" do
+          xit "loads files in the default path when run by rspec" do
+            config.stub(:command) { 'rspec' }
+            config.files_or_directories_to_run = []
+            config.files_to_run.should_not be_empty
+          end
+
+          xit "does not load files in the default path when run by ruby" do
+            config.stub(:command) { 'ruby' }
+            config.files_or_directories_to_run = []
+            config.files_to_run.should be_empty
+          end
+        end
+      end
+
+
+
     end
   end
 end

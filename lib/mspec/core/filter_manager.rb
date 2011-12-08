@@ -9,6 +9,16 @@ module MSpec
         @inclusions, @exclusions = {}, {}
       end
 
+      def add_location(file_path, line_numbers)
+        # filter_locations is a hash of expanded paths to arrays of line
+        # numbers to match against. e.g.
+        #   { "path/to/file.rb" => [37, 42] }
+        filter_locations = @inclusions[:locations] ||= Hash.new {|h,k| h[k] = []}
+        filter_locations[File.expand_path(file_path)].push(*line_numbers)
+        @exclusions.clear
+        @inclusions.replace(:locations => filter_locations)
+      end
+
       def prune(examples)
         examples.select {|e| !exclude?(e) && include?(e)}
       end
