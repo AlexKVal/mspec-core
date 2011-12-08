@@ -1,5 +1,7 @@
 module MSpec::Core
   class Configuration
+    include Hooks
+
     class MustBeConfiguredBeforeExampleGroupsError < StandardError; end
 
     def self.define_reader(name)
@@ -40,8 +42,8 @@ Called from #{caller(0)[5]}"
       end
     end
 
-    add_setting :treat_symbols_as_metadata_keys_with_true_values
     attr_accessor :filter_manager
+    add_setting :treat_symbols_as_metadata_keys_with_true_values
     add_setting :failure_exit_code
     add_setting :tty
     add_setting :files_to_run
@@ -81,7 +83,7 @@ Called from #{caller(0)[5]}"
       #@failure_exit_code = 1
       #@backtrace_clean_patterns = DEFAULT_BACKTRACE_PATTERNS.dup
       @default_path = 'spec'
-      #@filter_manager = FilterManager.new
+      @filter_manager = FilterManager.new
       @preferred_options = {}
       #@seed = srand % 0xFFFF
     end
@@ -183,6 +185,10 @@ Called from #{caller(0)[5]}"
       files = files.flatten
       files << default_path if command == 'mspec' && default_path && files.empty?
       self.files_to_run = get_files_to_run(files)
+    end
+
+    def filter_run_including(*args)
+      filter_manager.include_with_low_priority build_metadata_hash_from(args)
     end
 
     private

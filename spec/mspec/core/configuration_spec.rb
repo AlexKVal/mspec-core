@@ -285,7 +285,33 @@ module MSpec
         end
       end
 
+      describe "#filter_run_including" do
+        it_behaves_like "metadata hash builder" do
+          def metadata_hash(*args)
+            config.filter_run_including(*args)
+            config.inclusion_filter
+          end
+        end
 
+        xit "sets the filter with a hash" do
+          config.filter_run_including :foo => true
+          config.inclusion_filter[:foo].should be(true)
+        end
+
+        xit "sets the filter with a symbol" do
+          RSpec.configuration.stub(:treat_symbols_as_metadata_keys_with_true_values? => true)
+          config.filter_run_including :foo
+          config.inclusion_filter[:foo].should be(true)
+        end
+
+        xit "merges with existing filters" do
+          config.filter_run_including :foo => true
+          config.filter_run_including :bar => false
+
+          config.inclusion_filter[:foo].should be(true)
+          config.inclusion_filter[:bar].should be(false)
+        end
+      end
 
     end
   end
