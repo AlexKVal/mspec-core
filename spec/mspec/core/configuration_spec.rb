@@ -207,7 +207,7 @@ module MSpec
         end
       end
 
-      describe "#files_to_run" do #p
+      describe "#files_to_run" do
         it "loads files not following pattern if named explicitly" do
           config.files_or_directories_to_run = "spec/mspec/core/resources/a_bar.rb"
           config.files_to_run.should       eq(["spec/mspec/core/resources/a_bar.rb"])
@@ -225,7 +225,7 @@ module MSpec
           config.files_to_run.should eq(["spec/mspec/core/resources/a_spec.rb"])
         end
 
-        context "with <path>:<line_number>" do #p
+        context "with <path>:<line_number>" do
           it "overrides inclusion filters set on config" do
             config.filter_run_including :foo => :bar
             config.files_or_directories_to_run = "path/to/file.rb:37"
@@ -234,7 +234,7 @@ module MSpec
             config.inclusion_filter[:locations].values.first.should eq([37])
           end
 
-          xit "overrides inclusion filters set before config" do
+          it "overrides inclusion filters set before config" do
             config.force(:inclusion_filter => {:foo => :bar})
             config.files_or_directories_to_run = "path/to/file.rb:37"
             config.inclusion_filter.size.should eq(1)
@@ -242,14 +242,14 @@ module MSpec
             config.inclusion_filter[:locations].values.first.should eq([37])
           end
 
-          xit "clears exclusion filters set on config" do
+          it "clears exclusion filters set on config" do
             config.exclusion_filter = { :foo => :bar }
             config.files_or_directories_to_run = "path/to/file.rb:37"
             config.exclusion_filter.should be_empty,
               "expected exclusion filter to be empty:\n#{config.exclusion_filter}"
           end
 
-          xit "clears exclusion filters set before config" do
+          it "clears exclusion filters set before config" do
             config.force(:exclusion_filter => { :foo => :bar })
             config.files_or_directories_to_run = "path/to/file.rb:37"
             config.exclusion_filter.should be_empty,
@@ -313,6 +313,34 @@ module MSpec
         end
       end
 
+      describe "#filter_run_excluding" do
+        it_behaves_like "metadata hash builder" do
+          def metadata_hash(*args)
+            config.filter_run_excluding(*args)
+            config.exclusion_filter
+          end
+        end
+
+        it "sets the filter" do
+          config.filter_run_excluding :foo => true
+          config.exclusion_filter[:foo].should be(true)
+        end
+
+        it "sets the filter using a symbol" do
+          MSpec.configuration.stub(:treat_symbols_as_metadata_keys_with_true_values? => true)
+          config.filter_run_excluding :foo
+          config.exclusion_filter[:foo].should be(true)
+        end
+
+        it "merges with existing filters" do
+          config.filter_run_excluding :foo => true
+          config.filter_run_excluding :bar => false
+
+          config.exclusion_filter[:foo].should be(true)
+          config.exclusion_filter[:bar].should be(false)
+        end
+      end
+
       describe "#force" do
         it "forces order" do
           config.force :order => "default"
@@ -320,14 +348,14 @@ module MSpec
           config.order.should eq("default")
         end
 
-        xit "forces order and seed with :order => 'rand:37'" do
+        it "forces order and seed with :order => 'rand:37'" do
           config.force :order => "rand:37"
           config.order = "default"
           config.order.should eq("rand")
           config.seed.should eq(37)
         end
 
-        xit "forces order and seed with :seed => '37'" do
+        it "forces order and seed with :seed => '37'" do
           config.force :seed => "37"
           config.order = "default"
           config.seed.should eq(37)

@@ -166,8 +166,16 @@ Called from #{caller(0)[5]}"
       filter_manager.inclusions
     end
 
+    def inclusion_filter=(filter)
+      filter_manager.include! build_metadata_hash_from([filter])
+    end
+
     def exclusion_filter
       filter_manager.exclusions
+    end
+
+    def exclusion_filter=(filter)
+      filter_manager.exclude! build_metadata_hash_from([filter])
     end
 
     def full_backtrace=(flag)
@@ -185,6 +193,10 @@ Called from #{caller(0)[5]}"
 
     def filter_run_including(*args)
       filter_manager.include_with_low_priority build_metadata_hash_from(args)
+    end
+
+    def filter_run_excluding(*args)
+      filter_manager.exclude_with_low_priority build_metadata_hash_from(args)
     end
 
     # Seed for random ordering (default: generated randomly each run).
