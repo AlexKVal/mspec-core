@@ -1,12 +1,18 @@
 module MSpec
   module Core
     class FilterManager
+      DEFAULT_EXCLUSIONS = {
+        :if     => lambda { |value, metadata| metadata.has_key?(:if) && !value },
+        :unless => lambda { |value| value }
+      }
+
       STANDALONE_FILTERS = [:locations, :line_numbers, :full_description]
 
       attr_reader :exclusions, :inclusions
 
       def initialize
-        @inclusions, @exclusions = {}, {}
+        @exclusions = DEFAULT_EXCLUSIONS.dup
+        @inclusions = {}
       end
 
       def add_location(file_path, line_numbers)

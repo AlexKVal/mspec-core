@@ -341,6 +341,80 @@ module MSpec
         end
       end
 
+      describe "#inclusion_filter" do
+        it "returns {} even if set to nil" do
+          config.inclusion_filter = nil
+          config.inclusion_filter.should eq({})
+        end
+      end
+
+      describe "#inclusion_filter=" do
+        it "treats symbols as hash keys with true values when told to" do
+          MSpec.configuration.stub(:treat_symbols_as_metadata_keys_with_true_values? => true)
+          config.inclusion_filter = :foo
+          config.inclusion_filter.should eq({:foo => true})
+        end
+
+        it "overrides any inclusion filters set on the command line or in configuration files" do
+          config.force(:inclusion_filter => { :foo => :bar })
+          config.inclusion_filter = {:want => :this}
+          config.inclusion_filter.should eq({:want => :this})
+        end
+      end
+
+      describe "#exclusion_filter" do
+        it "returns {} even if set to nil" do
+          config.exclusion_filter = nil
+          config.exclusion_filter.should eq({})
+        end
+
+        describe "the default :if filter" do
+          it "does not exclude a spec with no :if metadata" do
+            config.exclusion_filter[:if].call(nil, {}).should be_false
+          end
+
+          it "does not exclude a spec with { :if => true } metadata" do
+            config.exclusion_filter[:if].call(true, {:if => true}).should be_false
+          end
+
+          it "excludes a spec with { :if => false } metadata" do
+            config.exclusion_filter[:if].call(false, {:if => false}).should be_true
+          end
+
+          it "excludes a spec with { :if => nil } metadata" do
+            config.exclusion_filter[:if].call(false, {:if => nil}).should be_true
+          end
+        end
+
+        describe "the default :unless filter" do
+          it "excludes a spec with  { :unless => true } metadata" do
+            config.exclusion_filter[:unless].call(true).should be_true
+          end
+
+          it "does not exclude a spec with { :unless => false } metadata" do
+            config.exclusion_filter[:unless].call(false).should be_false
+          end
+
+          it "does not exclude a spec with { :unless => nil } metadata" do
+            config.exclusion_filter[:unless].call(nil).should be_false
+          end
+        end
+      end
+
+      describe "#exclusion_filter=" do
+        it "treats symbols as hash keys with true values when told to" do
+          MSpec.configuration.stub(:treat_symbols_as_metadata_keys_with_true_values? => true)
+          config.exclusion_filter = :foo
+          config.exclusion_filter.should eq({:foo => true})
+        end
+
+        it "overrides any exclusion filters set on the command line or in configuration files" do
+          config.force(:exclusion_filter => { :foo => :bar })
+          config.exclusion_filter = {:want => :this}
+          config.exclusion_filter.should eq({:want => :this})
+        end
+      end
+
       describe "#force" do
         it "forces order" do
           config.force :order => "default"

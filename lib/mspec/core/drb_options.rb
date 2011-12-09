@@ -59,10 +59,11 @@ module MSpec::Core
 
       def add_filter(argv, name, hash)
         hash.each_pair do |k, v|
-          tag = (name == :exclusion) ? "~#{k}" : k.to_s
+          next if [:if,:unless].include?(k)
+          tag = name == :inclusion ? k.to_s : "~#{k}"
           tag << ":#{v}" if v.is_a?(String)
           argv << "--tag" << tag
-        end
+        end unless hash.empty?
       end
 
       def add_libs(argv)
