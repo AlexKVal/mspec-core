@@ -64,10 +64,6 @@ Called from #{caller(0)[5]}"
     # The drb_port (default: `8989`).
     add_setting :drb_port
 
-    # Determines the order in which examples are run (default: OS standard
-    # load order for files, declaration order for groups and examples).
-    add_setting :order
-
     # Report the times for the 10 slowest examples (default: `false`).
     add_setting :profile_examples
 
@@ -84,7 +80,7 @@ Called from #{caller(0)[5]}"
       #@backtrace_clean_patterns = DEFAULT_BACKTRACE_PATTERNS.dup
       @default_path = 'spec'
       @filter_manager = FilterManager.new
-      @preferred_options = {}
+      @preferred_options = {} # #force
       #@seed = srand % 0xFFFF
     end
 
@@ -191,6 +187,31 @@ Called from #{caller(0)[5]}"
       filter_manager.include_with_low_priority build_metadata_hash_from(args)
     end
 
+    # Seed for random ordering (default: generated randomly each run).
+    define_reader :seed
+
+    def seed=(seed)
+      order_n_seed_from_seed(seed)
+    end
+
+    # Determines the order in which examples are run (default: OS standard
+    # load order for files, declaration order for groups and examples).
+    add_setting :order
+
+    def order=(type)
+      order_n_seed_from_order(type)
+    end
+
+    # Used to set higher priority option values from the command line.
+    def force(hash)
+      if hash.has_key?(:seed)
+        hash[:order], hash[:seed] = order_n_seed_from_seed(hash[:seed])
+      elsif hash.has_key?(:order)
+        hash[:order], hash[:seed] = order_n_seed_from_order(hash[:order])
+      end
+      @preferred_options.merge!(hash)
+    end
+
     private
 
       def get_files_to_run(paths)
@@ -219,7 +240,7 @@ Called from #{caller(0)[5]}"
       end
 
       def value_for(key, default=nil)
-        @preferred_options.has_key?(key) ? @preferred_options[key] : default
+        @preferred_options[key] ? @preferred_options[key] : default
       end
 
       def assert_no_example_groups_defined(config_option)
@@ -259,6 +280,18 @@ Called from #{caller(0)[5]}"
       # # activesupport/lib/active_support/inflector/methods.rb, line 48
       # def underscore(camel_cased_word)
       # def file_at(path)
+
+      def order_n_seed_from_seed(value)
+        @order, @seed = 'rand', value.to_i
+      end
+
+      def order_n_seed_from_order(type)
+        order, seed = type.to_s.split(':')
+        @order = order
+        @seed  = seed = seed.to_i if seed
+        @order, @seed = nil, nil if order == 'default'
+        return order, seed
+      end
 
   end
 end

@@ -226,7 +226,7 @@ module MSpec
         end
 
         context "with <path>:<line_number>" do #p
-          xit "overrides inclusion filters set on config" do
+          it "overrides inclusion filters set on config" do
             config.filter_run_including :foo => :bar
             config.files_or_directories_to_run = "path/to/file.rb:37"
             config.inclusion_filter.size.should eq(1)
@@ -310,6 +310,28 @@ module MSpec
 
           config.inclusion_filter[:foo].should be(true)
           config.inclusion_filter[:bar].should be(false)
+        end
+      end
+
+      describe "#force" do
+        it "forces order" do
+          config.force :order => "default"
+          config.order = "rand"
+          config.order.should eq("default")
+        end
+
+        xit "forces order and seed with :order => 'rand:37'" do
+          config.force :order => "rand:37"
+          config.order = "default"
+          config.order.should eq("rand")
+          config.seed.should eq(37)
+        end
+
+        xit "forces order and seed with :seed => '37'" do
+          config.force :seed => "37"
+          config.order = "default"
+          config.seed.should eq(37)
+          config.order.should eq("rand")
         end
       end
 

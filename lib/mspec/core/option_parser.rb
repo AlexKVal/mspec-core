@@ -40,7 +40,7 @@ module MSpec::Core
           options[:order] = o
         end
 
-        parser.on('--seed SEED', "Equivalent of --order rand:SEED") do |seed|
+        parser.on('--seed SEED', Integer, "Equivalent of --order rand:SEED") do |seed|
           options[:order] = "rand:#{seed}"
         end
 
