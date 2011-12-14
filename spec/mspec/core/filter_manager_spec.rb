@@ -1,7 +1,8 @@
+#done
 require 'spec_helper'
 
 module MSpec::Core
-  describe FilterManager do #p
+  describe FilterManager do
     def opposite(name)
       name =~ /^in/ ? name.sub(/^(in)/,'ex') : name.sub(/^(ex)/,'in')
     end
@@ -158,8 +159,69 @@ module MSpec::Core
       end
     end
 
-    describe "#exclusions#description" do #p
-      pending
+    describe "#exclusions#description" do
+      it 'cleans up the description' do
+        project_dir = File.expand_path('.')
+        lambda { }.inspect.should include(project_dir)
+        lambda { }.inspect.should include(' (lambda)') if RUBY_VERSION > '1.9'
+        lambda { }.inspect.should include('0x')
+
+        filter_manager = FilterManager.new
+        filter_manager.exclude :foo => lambda { }
+
+        filter_manager.exclusions.description.should_not include(project_dir)
+        filter_manager.exclusions.description.should_not include(' (lambda)')
+        filter_manager.exclusions.description.should_not include('0x')
+      end
+
+      it 'returns `{}` when it only contains the default filters' do
+        filter_manager = FilterManager.new
+        filter_manager.exclusions.description.should eq({}.inspect)
+      end
+
+      it 'includes other filters' do
+        filter_manager = FilterManager.new
+        filter_manager.exclude :foo => :bar
+        filter_manager.exclusions.description.should eq({ :foo => :bar }.inspect)
+      end
+
+      it 'deprecates an overridden :if filter' do
+        MSpec.should_receive(:warn_deprecation).with(/exclude\(:if.*is deprecated/)
+        filter_manager = FilterManager.new
+        filter_manager.exclude :if => :custom_filter
+      end
+
+      it 'deprecates an :if filter overridden with low priority' do
+        MSpec.should_receive(:warn_deprecation).with(/exclude\(:if.*is deprecated/)
+        filter_manager = FilterManager.new
+        filter_manager.exclude_with_low_priority :if => :custom_filter
+      end
+
+      it 'deprecates an overridden :unless filter' do
+        MSpec.should_receive(:warn_deprecation).with(/exclude\(:unless.*is deprecated/)
+        filter_manager = FilterManager.new
+        filter_manager.exclude :unless => :custom_filter
+      end
+
+      it 'deprecates an :unless filter overridden with low priority' do
+        MSpec.should_receive(:warn_deprecation).with(/exclude\(:unless.*is deprecated/)
+        filter_manager = FilterManager.new
+        filter_manager.exclude_with_low_priority :unless => :custom_filter
+      end
+
+      it 'includes an overriden :if filter' do
+        MSpec.stub(:warn_deprecation)
+        filter_manager = FilterManager.new
+        filter_manager.exclude :if => :custom_filter
+        filter_manager.exclusions.description.should eq({ :if => :custom_filter }.inspect)
+      end
+
+      it 'includes an overriden :unless filter' do
+        MSpec.stub(:warn_deprecation)
+        filter_manager = FilterManager.new
+        filter_manager.exclude :unless => :custom_filter
+        filter_manager.exclusions.description.should eq({ :unless => :custom_filter }.inspect)
+      end
     end
 
     it "clears the inclusion filter on include :line_numbers" do

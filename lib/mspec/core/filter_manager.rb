@@ -21,11 +21,38 @@ module MSpec
         end
       end
 
+      module BackwardCompatibility
+        def merge(orig, opposite, *updates)
+          _warn_deprecated_keys(updates.last)
+          super
+        end
+
+        def reverse_merge(orig, opposite, *updates)
+          _warn_deprecated_keys(updates.last)
+          super
+        end
+
+        # Supports a use case that probably doesn't exist: overriding the
+        # if/unless procs.
+        def _warn_deprecated_keys(updates)
+          _warn_deprecated_key(:unless, updates) if updates.has_key?(:unless)
+          _warn_deprecated_key(:if, updates)     if updates.has_key?(:if)
+        end
+
+        # Emits a deprecation warning for keys that will not be supported in
+        # the future.
+        def _warn_deprecated_key(key, updates)
+          MSpec.warn_deprecation("\nDEPRECATION NOTICE: FilterManager#exclude(#{key.inspect} => #{updates[key].inspect}) is deprecated with no replacement, and will be removed from rspec-3.0.")
+          @exclusions[key] = updates.delete(key)
+        end
+      end
+
       attr_reader :exclusions, :inclusions
 
       def initialize
         @exclusions = DEFAULT_EXCLUSIONS.dup.extend(Describable)
         @inclusions = {}.extend(Describable)
+        extend(BackwardCompatibility)
       end
 
       def add_location(file_path, line_numbers)
