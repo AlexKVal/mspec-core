@@ -535,6 +535,87 @@ module MSpec
         end
       end
 
+      describe "#add_setting" do
+        describe "with no modifiers" do
+          context "with no additional options" do
+            before do
+              config.add_setting :custom_option
+            end
+
+            it "defaults to nil" do
+              config.custom_option.should be_nil
+            end
+
+            it "adds a predicate" do
+              config.custom_option?.should be_false
+            end
+
+            it "can be overridden" do
+              config.custom_option = "a value"
+              config.custom_option.should eq("a value")
+            end
+          end
+
+          context "with :default => 'a value'" do
+            before do
+              config.add_setting :custom_option, :default => 'a value'
+            end
+
+            it "defaults to 'a value'" do
+              config.custom_option.should eq("a value")
+            end
+
+            it "returns true for the predicate" do
+              config.custom_option?.should be_true
+            end
+
+            it "can be overridden with a truthy value" do
+              config.custom_option = "a new value"
+              config.custom_option.should eq("a new value")
+            end
+
+            it "can be overridden with nil" do
+              config.custom_option = nil
+              config.custom_option.should eq(nil)
+            end
+
+            it "can be overridden with false" do
+              config.custom_option = false
+              config.custom_option.should eq(false)
+            end
+          end
+        end
+
+        context "with :alias => " do
+          it "is deprecated" do
+            MSpec::should_receive(:warn).with(/deprecated/)
+            config.add_setting :custom_option
+            config.add_setting :another_custom_option, :alias => :custom_option
+          end
+        end
+
+        context "with :alias_with => " do
+          before do
+            config.add_setting :custom_option, :alias_with => :another_custom_option
+          end
+
+          it "delegates the getter to the other option" do
+            config.another_custom_option = "this value"
+            config.custom_option.should eq("this value")
+          end
+
+          it "delegates the setter to the other option" do
+            config.custom_option = "this value"
+            config.another_custom_option.should eq("this value")
+          end
+
+          it "delegates the predicate to the other option" do
+            config.custom_option = true
+            config.another_custom_option?.should be_true
+          end
+        end
+      end
+
 
 
 
