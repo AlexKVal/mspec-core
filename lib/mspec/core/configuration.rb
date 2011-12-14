@@ -89,7 +89,7 @@ Called from #{caller(0)[5]}"
       @mock_framework = nil
       @files_to_run = []
       @formatters = []
-      #@color = false
+      @color = false
       @pattern = '**/*_spec.rb'
       #@failure_exit_code = 1
       @backtrace_clean_patterns = DEFAULT_BACKTRACE_PATTERNS.dup
@@ -316,6 +316,26 @@ EOM
       end
     end
 
+    def color
+      return false unless output_to_tty?
+      value_for(:color, @color)
+    end
+
+    def color=(bool)
+      return unless bool
+      @color = true
+      if bool && ::RbConfig::CONFIG['host_os'] =~ /mswin|mingw/
+        unless ENV['ANSICON']
+          warn "You must use ANSICON 1.31 or later (http://adoxa.110mb.com/ansicon/) to use colour on Windows"
+          @color = false
+        end
+      end
+    end
+
+    alias_method :color_enabled, :color
+    alias_method :color_enabled=, :color=
+    define_predicate_for :color_enabled, :color
+
     private
 
       def get_files_to_run(paths)
@@ -371,7 +391,12 @@ EOM
         end
       end
 
-      # def output_to_tty?
+      def output_to_tty?
+        output_stream.tty? || tty?
+      rescue NoMethodError
+        false
+      end
+
       def built_in_formatter(key)
         case key.to_s
         when 'd', 'doc', 'documentation', 's', 'n', 'spec', 'nested'
