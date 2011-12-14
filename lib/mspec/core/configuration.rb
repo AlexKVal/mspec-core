@@ -48,6 +48,7 @@ Called from #{caller(0)[5]}"
     add_setting :tty
     add_setting :files_to_run
     add_setting :expecting_with_mspec
+    add_setting :backtrace_clean_patterns
 
     # Load files matching this pattern (default: `'**/*_spec.rb'`)
     add_setting :pattern, :alias_with => :filename_pattern
@@ -77,7 +78,7 @@ Called from #{caller(0)[5]}"
       #@color = false
       @pattern = '**/*_spec.rb'
       #@failure_exit_code = 1
-      #@backtrace_clean_patterns = DEFAULT_BACKTRACE_PATTERNS.dup
+      @backtrace_clean_patterns = DEFAULT_BACKTRACE_PATTERNS.dup
       @default_path = 'spec'
       @filter_manager = FilterManager.new
       @preferred_options = {} # #force
@@ -162,6 +163,19 @@ Called from #{caller(0)[5]}"
       @expectation_frameworks.push(*modules)
     end
 
+    DEFAULT_BACKTRACE_PATTERNS = [
+      /\/lib\d*\/ruby\//,
+      /org\/jruby\//,
+      /bin\//,
+      /gems/,
+      /spec\/spec_helper\.rb/,
+      /lib\/mspec\/(core|expectations|matchers|mocks)/
+    ]
+
+    def full_backtrace=(true_or_false)
+      @backtrace_clean_patterns = true_or_false ? [] : DEFAULT_BACKTRACE_PATTERNS
+    end
+
     def inclusion_filter
       filter_manager.inclusions
     end
@@ -176,10 +190,6 @@ Called from #{caller(0)[5]}"
 
     def exclusion_filter=(filter)
       filter_manager.exclude! build_metadata_hash_from([filter])
-    end
-
-    def full_backtrace=(flag)
-      #
     end
 
     def add_formatter

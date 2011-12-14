@@ -285,8 +285,6 @@ module MSpec
         end
       end
 
-
-
       describe "#filter_run_including" do
         it_behaves_like "metadata hash builder" do
           def metadata_hash(*args)
@@ -438,7 +436,29 @@ module MSpec
         end
       end
 
+      describe "#full_backtrace=" do
+        context "given true" do
+          it "clears the backtrace clean patterns" do
+            config.full_backtrace = true
+            config.backtrace_clean_patterns.should eq([])
+          end
+        end
 
+        context "given false" do
+          it "restores backtrace clean patterns" do
+            config.full_backtrace = false
+            config.backtrace_clean_patterns.should eq(MSpec::Core::Configuration::DEFAULT_BACKTRACE_PATTERNS)
+          end
+        end
+
+        it "doesn't impact other instances of config" do
+          config_1 = Configuration.new
+          config_2 = Configuration.new
+
+          config_1.full_backtrace = true
+          config_2.backtrace_clean_patterns.should_not be_empty
+        end
+      end
 
       describe "#force" do
         it "forces order" do
