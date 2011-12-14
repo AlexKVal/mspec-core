@@ -403,11 +403,29 @@ EOM
         str.is_a?(String) && /\A[A-Z][a-zA-Z0-9_:]*\z/ =~ str
       end
 
-      # def path_for(const_ref)
-      # def underscore_with_fix_for_non_standard_mspec_naming(string)
-      # # activesupport/lib/active_support/inflector/methods.rb, line 48
-      # def underscore(camel_cased_word)
-      # def file_at(path)
+      def path_for(const_ref)
+        underscore_with_fix_for_non_standard_mspec_naming(const_ref)
+      end
+
+      def underscore_with_fix_for_non_standard_mspec_naming(string)
+        underscore(string).sub(%r{(^|/)m_spec($|/)}, '\\1mspec\\2')
+      end
+
+      # activesupport/lib/active_support/inflector/methods.rb, line 48
+      def underscore(camel_cased_word)
+        word = camel_cased_word.to_s.dup
+        word.gsub!(/::/, '/')
+        word.gsub!(/([A-Z]+)([A-Z][a-z])/,'\1_\2')
+        word.gsub!(/([a-z\d])([A-Z])/,'\1_\2')
+        word.tr!("-", "_")
+        word.downcase!
+        word
+      end
+
+      def file_at(path)
+        FileUtils.mkdir_p(File.dirname(path))
+        File.new(path, 'w')
+      end
 
       def order_n_seed_from_seed(value)
         @order, @seed = 'rand', value.to_i

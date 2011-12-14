@@ -6,6 +6,12 @@ module MSpec
     module Formatters
 
       class BaseFormatter
+        include Helpers
+        attr_reader :output
+
+        def initialize(output)
+          @output = output || StringIO.new
+        end
       end
 
     end

@@ -285,6 +285,76 @@ module MSpec
         end
       end
 
+
+      describe '#formatter=' do
+        it "delegates to add_formatter (better API for user-facing configuration)" do
+          config.should_receive(:add_formatter).with('these','options')
+          config.add_formatter('these','options')
+        end
+      end
+
+      describe "#add_formatter" do
+
+        it "adds to the list of formatters" do
+          config.add_formatter :documentation
+          config.formatters.first.should be_an_instance_of(Formatters::DocumentationFormatter)
+        end
+
+        it "finds a formatter by name (w/ Symbol)" do
+          config.add_formatter :documentation
+          config.formatters.first.should be_an_instance_of(Formatters::DocumentationFormatter)
+        end
+
+        it "finds a formatter by name (w/ String)" do
+          config.add_formatter 'documentation'
+          config.formatters.first.should be_an_instance_of(Formatters::DocumentationFormatter)
+        end
+
+        it "finds a formatter by class" do
+          formatter_class = Class.new(Formatters::BaseTextFormatter)
+          config.add_formatter formatter_class
+          config.formatters.first.should be_an_instance_of(formatter_class)
+        end
+
+        it "finds a formatter by class name" do
+          Object.const_set("ACustomFormatter", Class.new(Formatters::BaseFormatter))
+          config.add_formatter "ACustomFormatter"
+          config.formatters.first.should be_an_instance_of(ACustomFormatter)
+        end
+
+        it "finds a formatter by class fully qualified name" do
+          MSpec.const_set("CustomFormatter", Class.new(Formatters::BaseFormatter))
+          config.add_formatter "MSpec::CustomFormatter"
+          config.formatters.first.should be_an_instance_of(MSpec::CustomFormatter)
+        end
+
+        it "requires a formatter file based on its fully qualified name" do
+          config.should_receive(:require).with('mspec/custom_formatter2') do
+            MSpec.const_set("CustomFormatter2", Class.new(Formatters::BaseFormatter))
+          end
+          config.add_formatter "MSpec::CustomFormatter2"
+          config.formatters.first.should be_an_instance_of(MSpec::CustomFormatter2)
+        end
+
+        it "raises NameError if class is unresolvable" do
+          config.should_receive(:require).with('mspec/custom_formatter3')
+          lambda { config.add_formatter "MSpec::CustomFormatter3" }.should raise_error(NameError)
+        end
+
+        it "raises ArgumentError if formatter is unknown" do
+          lambda { config.add_formatter :progresss }.should raise_error(ArgumentError)
+        end
+
+        context "with a 2nd arg defining the output" do
+          it "creates a file at that path and sets it as the output" do
+            path = File.join(Dir.tmpdir, 'output.txt')
+            config.add_formatter('doc', path)
+            config.formatters.first.output.should be_a(File)
+            config.formatters.first.output.path.should eq(path)
+          end
+        end
+      end
+
       describe "#filter_run_including" do
         it_behaves_like "metadata hash builder" do
           def metadata_hash(*args)
