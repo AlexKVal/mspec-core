@@ -285,6 +285,8 @@ module MSpec
         end
       end
 
+
+
       describe "#filter_run_including" do
         it_behaves_like "metadata hash builder" do
           def metadata_hash(*args)
@@ -414,6 +416,29 @@ module MSpec
           config.exclusion_filter.should eq({:want => :this})
         end
       end
+
+      describe "line_numbers=" do
+        before { config.filter_manager.stub(:warn) }
+
+        it "sets the line numbers" do
+          config.line_numbers = ['37']
+          config.inclusion_filter.should eq({:line_numbers => [37]})
+        end
+
+        it "overrides filters" do
+          config.filter_run :focused => true
+          config.line_numbers = ['37']
+          config.inclusion_filter.should eq({:line_numbers => [37]})
+        end
+
+        it "prevents subsequent filters" do
+          config.line_numbers = ['37']
+          config.filter_run :focused => true
+          config.inclusion_filter.should eq({:line_numbers => [37]})
+        end
+      end
+
+
 
       describe "#force" do
         it "forces order" do

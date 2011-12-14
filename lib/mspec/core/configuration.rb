@@ -195,8 +195,15 @@ Called from #{caller(0)[5]}"
       filter_manager.include_with_low_priority build_metadata_hash_from(args)
     end
 
+    alias_method :filter_run, :filter_run_including
+
     def filter_run_excluding(*args)
       filter_manager.exclude_with_low_priority build_metadata_hash_from(args)
+    end
+
+    # Run examples defined on `line_numbers` in all files to run.
+    def line_numbers=(line_numbers)
+      filter_run_including :line_numbers => line_numbers.map{|l| l.to_i}
     end
 
     # Seed for random ordering (default: generated randomly each run).
