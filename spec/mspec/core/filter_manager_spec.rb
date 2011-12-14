@@ -142,8 +142,20 @@ module MSpec::Core
       end
     end
 
-    describe "#inclusions#description" do #p
-      pending
+    describe "#inclusions#description" do
+      it 'cleans up the description' do
+        project_dir = File.expand_path('.')
+        lambda { }.inspect.should include(project_dir)
+        lambda { }.inspect.should include(' (lambda)') if RUBY_VERSION > '1.9'
+        lambda { }.inspect.should include('0x')
+
+        filter_manager = FilterManager.new
+        filter_manager.include :foo => lambda { }
+
+        filter_manager.inclusions.description.should_not include(project_dir)
+        filter_manager.inclusions.description.should_not include(' (lambda)')
+        filter_manager.inclusions.description.should_not include('0x')
+      end
     end
 
     describe "#exclusions#description" do #p

@@ -8,11 +8,24 @@ module MSpec
 
       STANDALONE_FILTERS = [:locations, :line_numbers, :full_description]
 
+      module Describable
+        PROC_HEX_NUMBER = /0x[0-9a-f]+@/
+        PROJECT_DIR = File.expand_path('.')
+
+        def description
+          reject { |k, v| MSpec::Core::FilterManager::DEFAULT_EXCLUSIONS[k] == v }.inspect.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)','')
+        end
+
+        def empty_without_conditional_filters?
+          reject { |k, v| MSpec::Core::FilterManager::DEFAULT_EXCLUSIONS[k] == v }.empty?
+        end
+      end
+
       attr_reader :exclusions, :inclusions
 
       def initialize
-        @exclusions = DEFAULT_EXCLUSIONS.dup
-        @inclusions = {}
+        @exclusions = DEFAULT_EXCLUSIONS.dup.extend(Describable)
+        @inclusions = {}.extend(Describable)
       end
 
       def add_location(file_path, line_numbers)
