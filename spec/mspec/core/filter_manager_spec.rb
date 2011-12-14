@@ -82,14 +82,14 @@ module MSpec::Core
       end
     end
 
-    describe "#prune" do #p till Metadata-filtering filter_applies?
+    describe "#prune" do
       def example_with(args = {})
         example = double('example')
         example.stub(:any_apply?) { |f| Metadata.new(args).any_apply?(f) }
         example
       end
 
-      xit "includes objects with tags matching inclusions" do
+      it "includes objects with tags matching inclusions" do
         included = example_with({:foo => :bar})
         excluded = example_with
         filter_manager = FilterManager.new
@@ -97,7 +97,7 @@ module MSpec::Core
         filter_manager.prune([included, excluded]).should eq([included])
       end
 
-      xit "excludes objects with tags matching exclusions" do
+      it "excludes objects with tags matching exclusions" do
         included = example_with
         excluded = example_with({:foo => :bar})
         filter_manager = FilterManager.new
@@ -105,7 +105,7 @@ module MSpec::Core
         filter_manager.prune([included, excluded]).should eq([included])
       end
 
-      xit "prefers exclusion when matches previously set inclusion" do
+      it "prefers exclusion when matches previously set inclusion" do
         included = example_with
         excluded = example_with({:foo => :bar})
         filter_manager = FilterManager.new
@@ -114,7 +114,7 @@ module MSpec::Core
         filter_manager.prune([included, excluded]).should eq([included])
       end
 
-      xit "prefers inclusion when matches previously set exclusion" do
+      it "prefers inclusion when matches previously set exclusion" do
         included = example_with({:foo => :bar})
         excluded = example_with
         filter_manager = FilterManager.new
@@ -123,7 +123,7 @@ module MSpec::Core
         filter_manager.prune([included, excluded]).should eq([included])
       end
 
-      xit "prefers previously set inclusion when exclusion matches but has lower priority" do
+      it "prefers previously set inclusion when exclusion matches but has lower priority" do
         included = example_with({:foo => :bar})
         excluded = example_with
         filter_manager = FilterManager.new
@@ -132,7 +132,7 @@ module MSpec::Core
         filter_manager.prune([included, excluded]).should eq([included])
       end
 
-      xit "prefers previously set exclusion when inclusion matches but has lower priority" do
+      it "prefers previously set exclusion when inclusion matches but has lower priority" do
         included = example_with
         excluded = example_with({:foo => :bar})
         filter_manager = FilterManager.new
