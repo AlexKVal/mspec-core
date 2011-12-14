@@ -270,6 +270,10 @@ EOM
       end
     end
 
+    def libs=(libs)
+      libs.map {|lib| $LOAD_PATH.unshift lib}
+    end
+
     private
 
       def get_files_to_run(paths)

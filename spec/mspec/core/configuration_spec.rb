@@ -521,6 +521,13 @@ module MSpec
         end
       end
 
+      describe "#libs=" do
+        it "adds directories to the LOAD_PATH" do
+          $LOAD_PATH.should_receive(:unshift).with("a/dir")
+          config.libs = ["a/dir"]
+        end
+      end
+
 
 
 
