@@ -274,6 +274,11 @@ EOM
       libs.map {|lib| $LOAD_PATH.unshift lib}
     end
 
+    def requires=(paths)
+      paths.map {|path| require path}
+    end
+
+
     private
 
       def get_files_to_run(paths)

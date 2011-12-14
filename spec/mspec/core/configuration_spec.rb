@@ -528,6 +528,13 @@ module MSpec
         end
       end
 
+      describe "#requires=" do
+        it "requires paths" do
+          config.should_receive(:require).with("a/path")
+          config.requires = ["a/path"]
+        end
+      end
+
 
 
 
