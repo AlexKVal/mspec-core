@@ -243,6 +243,10 @@ Called from #{caller(0)[5]}"
       order_n_seed_from_order(type)
     end
 
+    def randomize?
+      order.to_s.match(/rand/)
+    end
+
     # Used to set higher priority option values from the command line.
     def force(hash)
       if hash.has_key?(:seed)

@@ -655,6 +655,60 @@ module MSpec
         end
       end
 
+      describe '#seed' do
+        it 'returns the seed as an int' do
+          config.seed = '123'
+          config.seed.should eq(123)
+        end
+      end
+
+      describe '#randomize?' do
+        context 'with order set to :random' do
+          before { config.order = :random }
+
+          it 'returns true' do
+            config.randomize?.should be_true
+          end
+        end
+
+        context 'with order set to nil' do
+          before { config.order = nil }
+
+          it 'returns false' do
+            config.randomize?.should be_false
+          end
+        end
+      end
+
+      describe '#order=' do
+        context 'given "random:123"' do
+          before { config.order = 'random:123' }
+
+          it 'sets order to "random"' do
+            config.order.should eq('random')
+          end
+
+          it 'sets seed to 123' do
+            config.seed.should eq(123)
+          end
+        end
+
+        context 'given "default"' do
+          before do
+            config.order = 'rand:123'
+            config.order = 'default'
+          end
+
+          it "sets the order to nil" do
+            config.order.should be_nil
+          end
+
+          it "sets the seed to nil" do
+            config.seed.should be_nil
+          end
+        end
+      end
+
     end
   end
 end
