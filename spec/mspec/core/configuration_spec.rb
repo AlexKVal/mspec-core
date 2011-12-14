@@ -286,6 +286,20 @@ module MSpec
       end
 
 
+      describe "#run_all_when_everything_filtered?" do
+
+        it "defaults to false" do
+          config.run_all_when_everything_filtered?.should be_false
+        end
+
+        it "can be queried with question method" do
+          config.run_all_when_everything_filtered = true
+          config.run_all_when_everything_filtered?.should be_true
+        end
+      end
+
+
+
       describe '#formatter=' do
         it "delegates to add_formatter (better API for user-facing configuration)" do
           config.should_receive(:add_formatter).with('these','options')
