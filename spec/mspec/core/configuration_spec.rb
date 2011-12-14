@@ -287,6 +287,69 @@ module MSpec
 
 
 
+      describe "#include" do #p ExampleGroup
+
+        module InstanceLevelMethods
+          def you_call_this_a_blt?
+            "egad man, where's the mayo?!?!?"
+          end
+        end
+
+        it_behaves_like "metadata hash builder" do
+          def metadata_hash(*args)
+            config.include(InstanceLevelMethods, *args)
+            config.include_or_extend_modules.last.last
+          end
+        end
+
+        context "with no filter" do #p ExampleGroup
+          xit "includes the given module into each example group" do
+            MSpec.configure do |c|
+              c.include(InstanceLevelMethods)
+            end
+
+            group = ExampleGroup.describe('does like, stuff and junk', :magic_key => :include) { }
+            group.should_not respond_to(:you_call_this_a_blt?)
+            group.new.you_call_this_a_blt?.should eq("egad man, where's the mayo?!?!?")
+          end
+        end
+
+        context "with a filter" do #p ExampleGroup
+          xit "includes the given module into each matching example group" do
+            MSpec.configure do |c|
+              c.include(InstanceLevelMethods, :magic_key => :include)
+            end
+
+            group = ExampleGroup.describe('does like, stuff and junk', :magic_key => :include) { }
+            group.should_not respond_to(:you_call_this_a_blt?)
+            group.new.you_call_this_a_blt?.should eq("egad man, where's the mayo?!?!?")
+          end
+        end
+      end
+
+      describe "#extend" do #p ExampleGroup
+
+        module ThatThingISentYou
+          def that_thing
+          end
+        end
+
+        it_behaves_like "metadata hash builder" do
+          def metadata_hash(*args)
+            config.extend(ThatThingISentYou, *args)
+            config.include_or_extend_modules.last.last
+          end
+        end
+
+        xit "extends the given module into each matching example group" do
+          MSpec.configure do |c|
+            c.extend(ThatThingISentYou, :magic_key => :extend)
+          end
+
+          group = ExampleGroup.describe(ThatThingISentYou, :magic_key => :extend) { }
+          group.should respond_to(:that_thing)
+        end
+      end
 
       describe "#run_all_when_everything_filtered?" do
 

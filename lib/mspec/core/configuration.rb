@@ -46,6 +46,7 @@ Called from #{caller(0)[5]}"
     add_setting :treat_symbols_as_metadata_keys_with_true_values
     add_setting :failure_exit_code
     add_setting :tty
+    add_setting :include_or_extend_modules
     add_setting :files_to_run
     add_setting :expecting_with_mspec
     add_setting :backtrace_clean_patterns
@@ -85,7 +86,7 @@ Called from #{caller(0)[5]}"
 
     def initialize
       @expectation_frameworks = []
-      #@include_or_extend_modules = []
+      @include_or_extend_modules = []
       @mock_framework = nil
       @files_to_run = []
       @formatters = []
@@ -335,6 +336,16 @@ EOM
     alias_method :color_enabled, :color
     alias_method :color_enabled=, :color=
     define_predicate_for :color_enabled, :color
+
+    def include(mod, *args)
+      filters = build_metadata_hash_from(args)
+      include_or_extend_modules << [:include, mod, filters]
+    end
+
+    def extend(mod, *args)
+      filters = build_metadata_hash_from(args)
+      include_or_extend_modules << [:extend, mod, filters]
+    end
 
     private
 
