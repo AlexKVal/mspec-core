@@ -460,6 +460,24 @@ module MSpec
         end
       end
 
+      describe "#cleaned_from_backtrace? defaults" do
+        it "returns true for mspec files" do
+          config.should be_cleaned_from_backtrace("lib/mspec/core.rb")
+        end
+
+        it "returns true for spec_helper" do
+          config.cleaned_from_backtrace?("spec/spec_helper.rb").
+          should be_true
+        end
+
+        it "returns true for java files (for JRuby)" do
+          config.cleaned_from_backtrace?("org/jruby/RubyArray.java:2336").
+          should be_true
+        end
+      end
+
+
+
       describe "#force" do
         it "forces order" do
           config.force :order => "default"

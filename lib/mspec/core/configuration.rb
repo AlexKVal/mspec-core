@@ -176,6 +176,10 @@ Called from #{caller(0)[5]}"
       @backtrace_clean_patterns = true_or_false ? [] : DEFAULT_BACKTRACE_PATTERNS
     end
 
+    def cleaned_from_backtrace?(line)
+      backtrace_clean_patterns.any? { |regex| line =~ regex }
+    end
+
     def inclusion_filter
       filter_manager.inclusions
     end
