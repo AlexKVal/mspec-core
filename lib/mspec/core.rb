@@ -4,6 +4,7 @@ end
 
 require_mspec 'core/filter_manager'
 require_mspec 'core/deprecation'
+require_mspec 'core/reporter'
 
 require_mspec 'core/metadata_hash_builder'
 require_mspec 'core/hooks'

@@ -85,7 +85,7 @@ Called from #{caller(0)[5]}"
       #@include_or_extend_modules = []
       @mock_framework = nil
       @files_to_run = []
-      #@formatters = []
+      @formatters = []
       #@color = false
       @pattern = '**/*_spec.rb'
       #@failure_exit_code = 1
@@ -207,9 +207,6 @@ Called from #{caller(0)[5]}"
       filter_manager.exclude! build_metadata_hash_from([filter])
     end
 
-    def add_formatter
-    end
-
     def files_or_directories_to_run=(*files)
       files = files.flatten
       files << default_path if command == 'mspec' && default_path && files.empty?
@@ -256,6 +253,11 @@ Called from #{caller(0)[5]}"
       @preferred_options.merge!(hash)
     end
 
+    def reset
+      @reporter = nil
+      @formatters.clear
+    end
+
     def debug=(bool)
       return unless bool
       begin
@@ -285,6 +287,27 @@ EOM
       paths.map {|path| require path}
     end
 
+    def add_formatter(formatter_to_use, path=nil)
+      formatter_class =
+        built_in_formatter(formatter_to_use) ||
+        custom_formatter(formatter_to_use) ||
+        (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?.")
+
+      formatters << formatter_class.new(path ? file_at(path) : output)
+    end
+
+    alias_method :formatter=, :add_formatter
+
+    def formatters
+      @formatters ||= []
+    end
+
+    def reporter
+      @reporter ||= begin
+        add_formatter('progress') if formatters.empty?
+        Reporter.new(*formatters)
+      end
+    end
 
     private
 
@@ -342,8 +365,35 @@ EOM
       end
 
       # def output_to_tty?
-      # def built_in_formatter(key)
-      # def custom_formatter(formatter_ref)
+      def built_in_formatter(key)
+        case key.to_s
+        when 'd', 'doc', 'documentation', 's', 'n', 'spec', 'nested'
+          require 'mspec/core/formatters/documentation_formatter'
+          MSpec::Core::Formatters::DocumentationFormatter
+        when 'h', 'html'
+          require 'mspec/core/formatters/html_formatter'
+          MSpec::Core::Formatters::HtmlFormatter
+        when 't', 'textmate'
+          require 'mspec/core/formatters/text_mate_formatter'
+          MSpec::Core::Formatters::TextMateFormatter
+        when 'p', 'progress'
+          require 'mspec/core/formatters/progress_formatter'
+          MSpec::Core::Formatters::ProgressFormatter
+        end
+      end
+
+      def custom_formatter(formatter_ref)
+        if Class === formatter_ref
+          formatter_ref
+        elsif string_const?(formatter_ref)
+          begin
+            eval(formatter_ref)
+          rescue NameError
+            require path_for(formatter_ref)
+            eval(formatter_ref)
+          end
+        end
+      end
 
       def string_const?(str)
         str.is_a?(String) && /\A[A-Z][a-zA-Z0-9_:]*\z/ =~ str

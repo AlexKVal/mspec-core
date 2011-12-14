@@ -7,6 +7,8 @@ module MSpec::Core
     end
 
     def configure(config)
+      formatters = options.delete(:formatters)
+
       config.filter_manager = filter_manager
 
       order(options.keys, :libs, :requires).each do |key|
@@ -17,7 +19,7 @@ module MSpec::Core
         end
       end
 
-      config.add_formatter
+      formatters.each {|pair| config.add_formatter(*pair) } if formatters
     end
 
     def parse_options

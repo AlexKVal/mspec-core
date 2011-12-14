@@ -616,8 +616,22 @@ module MSpec
         end
       end
 
+      #configure_group
+      #alias_example_to
 
+      describe "#reset" do
+        it "clears the reporter" do
+          config.reporter.should_not be_nil
+          config.reset
+          config.instance_variable_get("@reporter").should be_nil
+        end
 
+        it "clears the formatters" do
+          config.add_formatter "doc"
+          config.reset
+          config.formatters.should be_empty
+        end
+      end
 
       describe "#force" do
         it "forces order" do
