@@ -76,6 +76,9 @@ Called from #{caller(0)[5]}"
     # Run all examples if none match the configured filters (default: `false`).
     add_setting :run_all_when_everything_filtered
 
+    # Load files matching this pattern (default: `'**/*_spec.rb'`)
+    add_setting :pattern, :alias_with => :filename_pattern
+
     def add_setting(name, opts={})
       default = opts.delete(:default)
       (class << self; self; end).class_eval do
@@ -92,7 +95,7 @@ Called from #{caller(0)[5]}"
       @formatters = []
       @color = false
       @pattern = '**/*_spec.rb'
-      #@failure_exit_code = 1
+      @failure_exit_code = 1
       @backtrace_clean_patterns = DEFAULT_BACKTRACE_PATTERNS.dup
       @default_path = 'spec'
       @filter_manager = FilterManager.new
@@ -199,6 +202,8 @@ Called from #{caller(0)[5]}"
       filter_manager.inclusions
     end
 
+    alias_method :filter, :inclusion_filter
+
     def inclusion_filter=(filter)
       filter_manager.include! build_metadata_hash_from([filter])
     end
@@ -293,6 +298,10 @@ EOM
 
     def requires=(paths)
       paths.map {|path| require path}
+    end
+
+    def full_description=(description)
+      filter_run :full_description => /#{description}/
     end
 
     def add_formatter(formatter_to_use, path=nil)

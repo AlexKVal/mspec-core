@@ -285,7 +285,100 @@ module MSpec
         end
       end
 
+      %w[pattern= filename_pattern=].each do |setter|
+        describe "##{setter}" do
+          context "with single pattern" do
+            before { config.send(setter, "**/*_foo.rb") }
+            it "loads files following pattern" do
+              file = File.expand_path(File.dirname(__FILE__) + "/resources/a_foo.rb")
+              config.files_or_directories_to_run = file
+              config.files_to_run.should include(file)
+            end
 
+            it "loads files in directories following pattern" do
+              dir = File.expand_path(File.dirname(__FILE__) + "/resources")
+              config.files_or_directories_to_run = dir
+              config.files_to_run.should include("#{dir}/a_foo.rb")
+            end
+
+            it "does not load files in directories not following pattern" do
+              dir = File.expand_path(File.dirname(__FILE__) + "/resources")
+              config.files_or_directories_to_run = dir
+              config.files_to_run.should_not include("#{dir}/a_bar.rb")
+            end
+          end
+
+          context "with multiple patterns" do
+            it "supports comma separated values" do
+              config.send(setter, "**/*_foo.rb,**/*_bar.rb")
+              dir = File.expand_path(File.dirname(__FILE__) + "/resources")
+              config.files_or_directories_to_run = dir
+              config.files_to_run.should include("#{dir}/a_foo.rb")
+              config.files_to_run.should include("#{dir}/a_bar.rb")
+            end
+
+            it "supports comma separated values with spaces" do
+              config.send(setter, "**/*_foo.rb, **/*_bar.rb")
+              dir = File.expand_path(File.dirname(__FILE__) + "/resources")
+              config.files_or_directories_to_run = dir
+              config.files_to_run.should include("#{dir}/a_foo.rb")
+              config.files_to_run.should include("#{dir}/a_bar.rb")
+            end
+          end
+        end
+      end
+
+      describe "path with line number" do
+        it "assigns the line number as a location filter" do
+          config.files_or_directories_to_run = "path/to/a_spec.rb:37"
+          config.filter.should eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37]}})
+        end
+      end
+
+      context "with full_description" do
+        it "overrides filters" do
+          config.filter_run :focused => true
+          config.full_description = "foo"
+          config.filter.should_not have_key(:focused)
+        end
+      end
+
+      context "with line number" do
+
+        it "assigns the file and line number as a location filter" do
+          config.files_or_directories_to_run = "path/to/a_spec.rb:37"
+          config.filter.should eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37]}})
+        end
+
+        it "assigns multiple files with line numbers as location filters" do
+          config.files_or_directories_to_run = "path/to/a_spec.rb:37", "other_spec.rb:44"
+          config.filter.should eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37],
+            File.expand_path("other_spec.rb") => [44]}})
+          end
+
+          it "assigns files with multiple line numbers as location filters" do
+            config.files_or_directories_to_run = "path/to/a_spec.rb:37", "path/to/a_spec.rb:44"
+            config.filter.should eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37, 44]}})
+          end
+        end
+
+        context "with multiple line numbers" do
+          it "assigns the file and line numbers as a location filter" do
+            config.files_or_directories_to_run = "path/to/a_spec.rb:1:3:5:7"
+            config.filter.should eq({:locations => {File.expand_path("path/to/a_spec.rb") => [1,3,5,7]}})
+          end
+        end
+
+      it "assigns the example name as the filter on description" do
+        config.full_description = "foo"
+        config.filter.should eq({:full_description => /foo/})
+      end
+
+      describe "#default_path" do
+        it 'defaults to "spec"' do
+          config.default_path.should eq('spec')
+        end
+      end
 
       describe "#include" do #p ExampleGroup
 
