@@ -113,6 +113,55 @@ module MSpec::Core
       example_metadata.update(user_metadata)
     end
 
+    def any_apply?(filters)
+      filters.any? {|k,v| filter_applies?(k,v)}
+    end
+
+    def all_apply?(filters)
+      filters.all? {|k,v| filter_applies?(k,v)}
+    end
+
+    def filter_applies?(key, value, metadata=self)
+      case key
+      when :line_numbers
+        metadata.line_number_filter_applies?(value)
+      when :locations
+        metadata.location_filter_applies?(value)
+      else
+        case value
+        when Hash
+          value.all? { |k, v| filter_applies?(k, v, metadata[key]) }
+        when Regexp
+          metadata[key] =~ value
+        when Proc
+          if value.arity == 2
+            # Pass the metadata hash to allow the proc to check if it even has the key.
+            # This is necessary for the implicit :if exclusion filter:
+            #   {            } # => run the example
+            #   { :if => nil } # => exclude the example
+            # The value of metadata[:if] is the same in these two cases but
+            # they need to be treated differently.
+            value.call(metadata[key], metadata) rescue false
+          else
+            value.call(metadata[key]) rescue false
+          end
+        else
+          metadata[key].to_s == value.to_s
+        end
+      end
+    end
+
+    def location_filter_applies?(locations)
+      # it ignores location filters for other files
+      line_number = example_group_declaration_line(locations)
+      line_number ? line_number_filter_applies?(line_number) : true
+    end
+
+    def line_number_filter_applies?(line_numbers)
+      preceding_declaration_lines = line_numbers.map {|n| MSpec.world.preceding_declaration_line(n)}
+      !(relevant_line_numbers & preceding_declaration_lines).empty?
+    end
+
     private
 
       RESERVED_KEYS = [
@@ -143,6 +192,16 @@ Here are all of MSpec's reserved hash keys:
 #{"*"*50}"
           end
         end
+      end
+
+      def example_group_declaration_line(locations)
+        locations[File.expand_path(self[:example_group][:file_path])] if self[:example_group]
+      end
+
+      # TODO - make this a method on metadata - the problem is
+      # metadata[:example_group] is not always a kind of GroupMetadataHash.
+      def relevant_line_numbers(metadata=self)
+        [metadata[:line_number]] + (metadata[:example_group] ? relevant_line_numbers(metadata[:example_group]) : [])
       end
   end
 end

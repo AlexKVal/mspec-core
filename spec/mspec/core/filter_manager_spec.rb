@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module MSpec::Core
-  describe FilterManager do
+  describe FilterManager do #p
     def opposite(name)
       name =~ /^in/ ? name.sub(/^(in)/,'ex') : name.sub(/^(ex)/,'in')
     end
@@ -82,7 +82,7 @@ module MSpec::Core
       end
     end
 
-    describe "#prune" do #p till Metadata-filtering
+    describe "#prune" do #p till Metadata-filtering filter_applies?
       def example_with(args = {})
         example = double('example')
         example.stub(:any_apply?) { |f| Metadata.new(args).any_apply?(f) }
