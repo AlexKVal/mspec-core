@@ -10,7 +10,7 @@ module MSpec
   module Core
     module MockFrameworkAdapter; def self.framework_name; :mspec end; end
 
-    describe Configuration do #p
+    describe Configuration do #p ExampleGroup
 
       let(:config) { Configuration.new }
 
@@ -956,8 +956,69 @@ module MSpec
         end
       end
 
-      #configure_group
-      #alias_example_to
+      describe "#configure_group" do #p ExampleGroup
+        xit "extends with 'extend'" do
+          mod = Module.new
+          group = ExampleGroup.describe("group", :foo => :bar)
+
+          config.extend(mod, :foo => :bar)
+          config.configure_group(group)
+          group.should be_a(mod)
+        end
+
+        xit "extends with 'module'" do
+          mod = Module.new
+          group = ExampleGroup.describe("group", :foo => :bar)
+
+          config.include(mod, :foo => :bar)
+          config.configure_group(group)
+          group.included_modules.should include(mod)
+        end
+
+        xit "requires only one matching filter" do
+          mod = Module.new
+          group = ExampleGroup.describe("group", :foo => :bar)
+
+          config.include(mod, :foo => :bar, :baz => :bam)
+          config.configure_group(group)
+          group.included_modules.should include(mod)
+        end
+
+        xit "includes each one before deciding whether to include the next" do
+          mod1 = Module.new do
+            def self.included(host)
+              host.metadata[:foo] = :bar
+            end
+          end
+          mod2 = Module.new
+
+          group = ExampleGroup.describe("group")
+
+          config.include(mod1)
+          config.include(mod2, :foo => :bar)
+          config.configure_group(group)
+          group.included_modules.should include(mod1)
+          group.included_modules.should include(mod2)
+        end
+      end
+
+      describe "#alias_example_to" do #p ExampleGroup
+        # it_behaves_like "metadata hash builder" do
+        #   after do
+        #     MSpec::Core::ExampleGroup.module_eval do
+        #       class << self
+        #         undef :my_example_method if method_defined? :my_example_method
+        #       end
+        #     end
+        #   end
+        #   def metadata_hash(*args)
+        #     config.alias_example_to :my_example_method, *args
+        #     group = ExampleGroup.describe("group")
+        #     example = group.my_example_method("description")
+        #     example.metadata
+        #   end
+        # end
+      end
 
       describe "#reset" do
         it "clears the reporter" do
