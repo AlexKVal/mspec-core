@@ -245,6 +245,27 @@ Called from #{caller(0)[5]}"
       @preferred_options.merge!(hash)
     end
 
+    def debug=(bool)
+      return unless bool
+      begin
+        require 'ruby-debug'
+        Debugger.start
+      rescue LoadError => e
+        raise <<-EOM
+
+#{'*'*50}
+#{e.message}
+
+If you have it installed as a ruby gem, then you need to either require
+'rubygems' or configure the RUBYOPT environment variable with the value
+'rubygems'.
+
+#{e.backtrace.join("\n")}
+#{'*'*50}
+EOM
+      end
+    end
+
     private
 
       def get_files_to_run(paths)
