@@ -72,6 +72,9 @@ Called from #{caller(0)[5]}"
     # Report the times for the 10 slowest examples (default: `false`).
     add_setting :profile_examples
 
+    # Run all examples if none match the configured filters (default: `false`).
+    add_setting :run_all_when_everything_filtered
+
     def add_setting(name, opts={})
       default = opts.delete(:default)
       (class << self; self; end).class_eval do
