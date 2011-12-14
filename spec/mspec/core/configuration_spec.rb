@@ -513,6 +513,15 @@ module MSpec
         end
       end
 
+      describe "#output=" do
+        it "sets the output" do
+          output = mock("output")
+          config.output = output
+          config.output.should equal(output)
+        end
+      end
+
+
 
 
       describe "#force" do

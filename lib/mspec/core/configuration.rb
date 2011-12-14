@@ -50,6 +50,10 @@ Called from #{caller(0)[5]}"
     add_setting :expecting_with_mspec
     add_setting :backtrace_clean_patterns
 
+    # Default: `$stdout`.
+    # Also known as `output` and `out`
+    add_setting :output_stream, :alias_with => [:output, :out]
+
     # Load files matching this pattern (default: `'**/*_spec.rb'`)
     add_setting :pattern, :alias_with => :filename_pattern
 
@@ -82,7 +86,7 @@ Called from #{caller(0)[5]}"
       @default_path = 'spec'
       @filter_manager = FilterManager.new
       @preferred_options = {} # #force
-      #@seed = srand % 0xFFFF
+      @seed = srand % 0xFFFF
     end
 
     def load_spec_files
